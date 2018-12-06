@@ -13,7 +13,10 @@ import farmer.bailiwick.seeds.pathein.patheinseedslaboratory.Model.Report_status
 import farmer.bailiwick.seeds.pathein.patheinseedslaboratory.Model.SaveLoginResponse;
 import farmer.bailiwick.seeds.pathein.patheinseedslaboratory.Model.SaveTestResponse;
 import farmer.bailiwick.seeds.pathein.patheinseedslaboratory.Model.SeedsResponse;
+import farmer.bailiwick.seeds.pathein.patheinseedslaboratory.Model.Township_Response;
 import farmer.bailiwick.seeds.pathein.patheinseedslaboratory.Model.VarityResponse;
+import farmer.bailiwick.seeds.pathein.patheinseedslaboratory.Model.Village_T_Response;
+import farmer.bailiwick.seeds.pathein.patheinseedslaboratory.Model.village_Response;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -29,6 +32,15 @@ public interface ApiInterface {
 
     @POST("getRegion")
     Call<Regionresponse> getregion(@Body RequestBody body);
+
+    @POST("getTownShipByStateId")
+    Call<Township_Response> getTownship(@Body RequestBody body);
+
+    @POST("getVillageTrackOnTownId")
+    Call<village_Response> getVillage(@Body RequestBody body);
+
+    @POST("getVillageByVillageTrackId")
+    Call<Village_T_Response> getTract(@Body RequestBody body);
 
     @POST("getVariety")
     Call<VarityResponse> getVarity(@Body RequestBody body);

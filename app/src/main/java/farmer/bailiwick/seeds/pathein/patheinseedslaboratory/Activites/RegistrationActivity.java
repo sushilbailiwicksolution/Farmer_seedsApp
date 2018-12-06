@@ -39,7 +39,10 @@ import farmer.bailiwick.seeds.pathein.patheinseedslaboratory.CustomDialog.SweetA
 import farmer.bailiwick.seeds.pathein.patheinseedslaboratory.Model.CropResponse;
 import farmer.bailiwick.seeds.pathein.patheinseedslaboratory.Model.Regionresponse;
 import farmer.bailiwick.seeds.pathein.patheinseedslaboratory.Model.SeedsResponse;
+import farmer.bailiwick.seeds.pathein.patheinseedslaboratory.Model.Township_Response;
 import farmer.bailiwick.seeds.pathein.patheinseedslaboratory.Model.VarityResponse;
+import farmer.bailiwick.seeds.pathein.patheinseedslaboratory.Model.Village_T_Response;
+import farmer.bailiwick.seeds.pathein.patheinseedslaboratory.Model.village_Response;
 import farmer.bailiwick.seeds.pathein.patheinseedslaboratory.R;
 import farmer.bailiwick.seeds.pathein.patheinseedslaboratory.Support.RootActivity;
 import farmer.bailiwick.seeds.pathein.patheinseedslaboratory.webservices.RetrofitApiClient;
@@ -57,11 +60,13 @@ public class RegistrationActivity extends RootActivity implements DatePickerDial
 
     LinearLayout lnt_date_receipt, lnt_year_of_production;
     TextView txt_date_receipt, txt_year_of_production, txt_varity;
-    Spinner spnr_crop, spnr_region, spnr_season, spnr_seeds;
+    Spinner spnr_crop, spnr_season, spnr_seeds;
+    Spinner spnr_sender_catagory, spnr_region, spnr_village_tract, spnr_village, spnr_township;
+
     AutoCompleteTextView spnr_varity;
 
     Button btn_submit;
-    EditText edt_smple_qty, edt_lot_no, edt_address, edt_sender_name, edt_varity;
+    EditText edt_smple_qty, edt_lot_no, edt_sender_name, edt_varity;
     RadioGroup RDGcrop_status;
     RadioButton rb_good, rb_not_good;
     CheckBox chk_moisture, chk_physical, chk_germination, chk_red_rice, chk_alltest;
@@ -72,6 +77,9 @@ public class RegistrationActivity extends RootActivity implements DatePickerDial
 
     ArrayList<String> LIST_crop_name, LIST_varity_name, LIST_region_name, LIST_season_name, List_Seeds;
     ArrayAdapter Spinner_Crop_adapter, Spinner_varity_adapter, Spinner_region_adapter, Spinner_Season_adapter, Spinner_Seeds_adapter;
+    ArrayAdapter Spinner_sender_catagory_adapter, Spinner_town_adapter, Spinner_village_adapter, Spinner_tract_adapter;
+
+    ArrayList<String> List_sender_catagory;
 
     enum DateType {DR, DI}
 
@@ -82,13 +90,20 @@ public class RegistrationActivity extends RootActivity implements DatePickerDial
     DateType DT;
     android.app.AlertDialog alertDialog;
 
+    ArrayList<String> List_Township, List_Village, List_Trackt;
 
     List<CropResponse.CropData> CropList;
     List<Regionresponse.ListRegion> RegionList;
     List<VarityResponse.ListVarity> VarityList;
     List<SeedsResponse.ListSeeds> SeedsList;
 
-    boolean isVaritySpinner;
+
+    List<Township_Response.ListData> townsList;
+    List<Village_T_Response.ListData> tractList;
+    List<village_Response.ListData> villageList;
+
+
+    boolean isVaritySpinner, isTract = false;
 
     public static boolean isDateValid(String date) {
         final String DATE_FORMAT = "dd-MM-yyyy";
@@ -112,10 +127,332 @@ public class RegistrationActivity extends RootActivity implements DatePickerDial
         setSpinnerData();
         clickevent();
         spinnerClickEvent();
+        setAddressVisiblity(View.VISIBLE, View.GONE, View.GONE);
+    }
+
+
+    private void clickevent() {
+        lnt_year_of_production.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MonthPickerDialog.Builder builder = new MonthPickerDialog.Builder(mContext, new MonthPickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(int selectedMonth, int selectedYear) {
+                        txt_year_of_production.setText(Integer.toString(selectedYear));
+                        year = selectedYear;
+                    }
+                }, year, 0);
+
+                builder.showYearOnly().setYearRange(1990, 2030).build().show();
+            }
+
+        });
+
+        lnt_date_receipt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DT = DateType.DR;
+                datePickerDialog.show();
+            }
+        });
+
+        chk_alltest.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                SetAllTestChecked(isChecked);
+
+            }
+        });
+        btn_submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                checkValidation();
+            }
+        });
+    }
+
+    private void checkValidation() {
+
+        if (edt_sender_name.getText().toString().trim().equalsIgnoreCase("")) {
+            edt_sender_name.setError("requried");
+            edt_sender_name.requestFocus();
+            return;
+
+        } else if (txt_date_receipt.getText().toString().equalsIgnoreCase("")) {
+            txt_date_receipt.setError("Please Select Date");
+            txt_date_receipt.requestFocus();
+            return;
+        } else if (spnr_sender_catagory.getSelectedItemPosition() == 0) {
+            Toast.makeText(getApplicationContext(), "Please Select Sender Catagory", Toast.LENGTH_LONG).show();
+            spnr_sender_catagory.requestFocus();
+            return;
+
+        } else if (isTract) {
+            Toast.makeText(getApplicationContext(), "Please Fill Address", Toast.LENGTH_LONG).show();
+            spnr_region.requestFocus();
+            return;
+
+        } else if (spnr_crop.getSelectedItemPosition() == 0) {
+            Toast.makeText(getApplicationContext(), "Please Select Crop", Toast.LENGTH_LONG).show();
+            spnr_crop.requestFocus();
+            return;
+
+        } else if (spnr_crop.getSelectedItem().toString().trim().equalsIgnoreCase("Rice") && spnr_varity.getText().toString().equalsIgnoreCase("")) {
+
+            Toast.makeText(getApplicationContext(), "Please Select Varity", Toast.LENGTH_LONG).show();
+            spnr_varity.setError("Please Select Varity");
+            spnr_varity.requestFocus();
+            return;
+
+        } else if (!spnr_crop.getSelectedItem().toString().trim().equalsIgnoreCase("Rice") && edt_varity.getText().toString().trim().equalsIgnoreCase("")) {
+            edt_varity.setError("Please Select Varity");
+            edt_varity.requestFocus();
+            return;
+
+        }
+        if (spnr_region.getSelectedItemPosition() == 0) {
+            Toast.makeText(getApplicationContext(), "Please Select Region", Toast.LENGTH_LONG).show();
+            spnr_region.requestFocus();
+
+            return;
+
+        } else if (txt_year_of_production.getText().toString().equalsIgnoreCase(getResources().getString(R.string.year))) {
+            txt_year_of_production.setError("Please Select Year");
+            txt_year_of_production.requestFocus();
+            return;
+        } else if (spnr_season.getSelectedItemPosition() == 0) {
+            Toast.makeText(getApplicationContext(), "Please Select Season", Toast.LENGTH_LONG).show();
+            spnr_season.requestFocus();
+
+            return;
+
+        } else if (edt_lot_no.getText().toString().trim().equalsIgnoreCase("")) {
+            edt_lot_no.setError("requried");
+            edt_lot_no.requestFocus();
+
+            return;
+
+
+        } else if (spnr_seeds.getSelectedItemPosition() == 0) {
+            Toast.makeText(getApplicationContext(), "Please Select Seed", Toast.LENGTH_LONG).show();
+            spnr_seeds.requestFocus();
+            return;
+
+
+        } else if (!isAnyboxChecked()) {
+            Toast.makeText(getApplicationContext(), "Please Select TEST to be done", Toast.LENGTH_LONG).show();
+            return;
+
+        } else if (edt_smple_qty.getText().toString().trim().equalsIgnoreCase("")) {
+
+            edt_smple_qty.setError("requried");
+            edt_smple_qty.requestFocus();
+
+            return;
+
+        } else if (RDGcrop_status.getCheckedRadioButtonId() == -1) {
+            Toast.makeText(getApplicationContext(), "Please Select Product Quality", Toast.LENGTH_LONG).show();
+            return;
+        } else if (isVaritySpinner && spnr_varity.getText().toString().trim().equalsIgnoreCase("")) {
+            //       Log.e("i m heree ...1111 ","posoition  "+spnr_varity.getSelectedItemPosition());
+
+            Toast.makeText(getApplicationContext(), "Please Select Varity", Toast.LENGTH_LONG).show();
+            return;
+
+        } else if (!isVaritySpinner && edt_varity.getText().toString().trim().equalsIgnoreCase("")) {
+            edt_varity.setError("Requried");
+            return;
+
+
+        } else {
+            Log.e("All Set ", "All Set ");
+            Toast.makeText(getApplicationContext(), "All data is selected No save it", Toast.LENGTH_SHORT).show();
+// user
+            String senderName, township, senderCatagory, villageTrack, village, dateOfReceipt, crop, varityName, region, season_name, lotNo, seed_name, sampleQty, packing, year, germinationTest, moistureTest, physicalPurityTest, redRiceTest, allTest;
+            senderName = edt_sender_name.getText().toString().trim();
+            senderCatagory = "" + (spnr_sender_catagory.getSelectedItemPosition() );
+// address
+            township = townsList.get(spnr_township.getSelectedItemPosition() - 1).getId().toString();
+            villageTrack = tractList.get(spnr_village_tract.getSelectedItemPosition() - 1).getId().toString();
+            village = villageList.get(spnr_village.getSelectedItemPosition() - 1).getId().toString();
+            region = RegionList.get(spnr_region.getSelectedItemPosition() - 1).getId().toString();
+            dateOfReceipt = txt_date_receipt.getText().toString();
+            crop = CropList.get(spnr_crop.getSelectedItemPosition() - 1).getId().toString();
+            season_name = getSeason();
+            seed_name = SeedsList.get(spnr_seeds.getSelectedItemPosition() - 1).getId().toString();
+            if (isVaritySpinner) {
+                varityName = spnr_varity.getText().toString().trim();
+            } else {
+                varityName = edt_varity.getText().toString();
+            }
+            lotNo = edt_lot_no.getText().toString().trim();
+            sampleQty = edt_smple_qty.getText().toString().trim();
+            year = txt_year_of_production.getText().toString();
+            int selectedId = RDGcrop_status.getCheckedRadioButtonId();
+            Log.e("radio button value", "" + selectedId);
+            packing = "" + 0;
+
+            int id = RDGcrop_status.getCheckedRadioButtonId();
+            View radioButton = RDGcrop_status.findViewById(id);
+            int radioId = RDGcrop_status.indexOfChild(radioButton);
+
+            RadioButton btn = (RadioButton) RDGcrop_status.getChildAt(radioId);
+            String selection = (String) btn.getText();
+            packing = selection;
+
+
+            allTest = "0";
+            germinationTest = checkedtest(chk_germination);
+            redRiceTest = checkedtest(chk_red_rice);
+            physicalPurityTest = checkedtest(chk_physical);
+            moistureTest = checkedtest(chk_moisture);
+
+
+            RegisterSeeds(senderName, township, senderCatagory, villageTrack, village, dateOfReceipt, crop, varityName, region, season_name, lotNo, seed_name, sampleQty, packing, year, germinationTest, moistureTest, physicalPurityTest, redRiceTest, allTest);
+
+
+        }
+
+    }
+
+    private String checkedtest(CheckBox chkBox) {
+
+        if (chkBox.isChecked()) {
+            return "1";
+        } else {
+            return "0";
+        }
+    }
+
+
+    private String getSeason() {
+
+        String value = spnr_season.getSelectedItem().toString();
+        if (value.equalsIgnoreCase("Summer")) {
+            return "1";
+        } else {
+            return "2";
+        }
+
+
+    }
+
+    private void RegisterSeeds(String senderName, String township, String senderCatagory, String villageTrack, String village, String dateOfReceipt, String crop, String variety, String region, String season, String lotNo, String seedClass, String sampleQty, String packing, String year, String germinationTest, String moistureTest, String physicalPurityTest, String redRiceTest, String allTest) {
+
+
+        JSONObject js = new JSONObject();
+
+        try {
+            js.put("senderName", senderName);
+            // js.put("address", address);
+            js.put("township", township);
+            js.put("senderCatagory", senderCatagory);
+            js.put("villageTrack", villageTrack);
+            js.put("village", village);
+            js.put("dateOfReceipt", dateOfReceipt);
+            js.put("crop", crop);
+            js.put("variety", variety);
+            js.put("region", region);
+            js.put("season", season);
+            js.put("lotNo", lotNo);
+            js.put("seedClass", seedClass);
+            js.put("sampleQty", sampleQty);
+            js.put("packing", packing);
+            js.put("year", year);
+            js.put("germinationTest", germinationTest);
+            js.put("moistureTest", moistureTest);
+            js.put("physicalPurityTest", physicalPurityTest);
+            js.put("redRiceTest", redRiceTest);
+            js.put("allTest", allTest);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        Log.e("Params ", "Values  : " + js.toString());
+
+        //  alertDialog.show();
+        final RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), (js.toString()));
+        // Dialog start
+        RetrofitApiClient.get().SaveSample(body).enqueue(new Callback<Regionresponse>() {
+            @Override
+            public void onResponse(Call<Regionresponse> call, Response<Regionresponse> response) {
+                // dialog End
+                // Log.e("my Response  : ","ppp  :  "+ response.body().toString());
+                Log.e("my Response  : ", "Rajesh  :  " + new Gson().toJson(response));
+                //        alertDialog.dismiss();
+                Log.e("my Response  : ", response.body().getMessage().toString());
+                if (response.body().getStatusCode() == 0) {
+                    Log.e("my Response  : ", response.body().getMessage().toString());
+
+                    new SweetAlertDialog(mContext, SweetAlertDialog.SUCCESS_TYPE).setTitleText("Registration Succesfull!").setContentText("Please Note Your LAB REF No :  " + response.body().getMessage().toString()).show();
+                    clearData();
+                } else {
+                    Toast.makeText(getApplicationContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                }
+
+
+            }
+
+
+            @Override
+            public void onFailure(Call<Regionresponse> call, Throwable t) {
+                Log.e("my Response  : ", t.toString());
+                alertDialog.dismiss();
+            }
+        });
+
+
+    }
+
+    private void SetAllTestChecked(boolean isChecked) {
+
+        chk_red_rice.setChecked(isChecked);
+        chk_germination.setChecked(isChecked);
+        chk_physical.setChecked(isChecked);
+        chk_moisture.setChecked(isChecked);
+    }
+
+    private void clearData() {
+
+        edt_sender_name.setText("");
+        // txt_date_receipt.setText("");
+        setCurrentDate();
+        spnr_crop.setSelection(0);
+        spnr_region.setSelection(0);
+        txt_year_of_production.setText("YEAR");
+        spnr_season.setSelection(0);
+        edt_lot_no.setText("");
+        spnr_seeds.setSelection(0);
+        chk_alltest.setChecked(false);
+        SetAllTestChecked(false);
+        edt_smple_qty.setText("");
+        rb_good.setChecked(false);
+        rb_not_good.setChecked(false);
+        edt_sender_name.requestFocus();
+
     }
 
     private void spinnerClickEvent() {
+        spnr_village_tract.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position >= 0) {
+                    isTract = false;
+                } else {
+                    if (spnr_village_tract.getVisibility() == View.VISIBLE) {
+                        isTract = true;
 
+                    }
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
         spnr_crop.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -143,6 +480,238 @@ public class RegistrationActivity extends RootActivity implements DatePickerDial
 
             }
         });
+        spnr_region.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position == 0) {
+                    setAddressVisiblity(View.GONE, View.GONE, View.GONE);
+                } else {
+                    setAddressVisiblity(View.GONE, View.GONE, View.GONE);
+                    getTownship(RegionList.get(position - 1).getId());
+
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
+        spnr_township.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position == 0) {
+                    setAddressVisiblity(View.VISIBLE, View.GONE, View.GONE);
+                } else {
+                    setAddressVisiblity(View.VISIBLE, View.GONE, View.GONE);
+                    getVillage(townsList.get(position - 1).getId());
+
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        spnr_village.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position == 0) {
+                    setAddressVisiblity(View.VISIBLE, View.VISIBLE, View.GONE);
+                } else {
+                    setAddressVisiblity(View.VISIBLE, View.VISIBLE, View.GONE);
+                    getTract(villageList.get(position - 1).getId());
+
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+    }
+
+    private void getTract(Integer id) {
+        alertDialog.show();
+
+        JSONObject js = new JSONObject();
+
+        try {
+            js.put("id", "" + id);
+
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        final RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), js.toString());
+        // Dialog start
+        RetrofitApiClient.get().getTract(body).enqueue(new Callback<Village_T_Response>() {
+            @Override
+            public void onResponse(Call<Village_T_Response> call, Response<Village_T_Response> response) {
+                // dialog End
+                // Log.e("my Response  : ","ppp  :  "+ response.body().toString());
+                Log.e("my Response  : ", "Rajesh  :  " + new Gson().toJson(response));
+                alertDialog.dismiss();
+                Log.e("my Response  : ", response.body().getMessage().toString());
+                if (response.body().getStatusCode() == 0) {
+                    tractList = response.body().getList();
+                    setTractList();
+                } else {
+                    Toast.makeText(getApplicationContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                }
+
+
+            }
+
+
+            @Override
+            public void onFailure(Call<Village_T_Response> call, Throwable t) {
+                Log.e("my Response  : ", t.toString());
+                alertDialog.dismiss();
+            }
+        });
+
+
+    }
+
+    private void setTractList() {
+        List_Trackt = new ArrayList<>();
+        List_Trackt.add("Select Village Tract");
+        for (int i = 0; i < tractList.size(); i++) {
+            List_Trackt.add(tractList.get(i).getName());
+
+        }
+        Spinner_tract_adapter = new ArrayAdapter<String>(mContext, R.layout.spinner_layout_white_text, List_Trackt);
+//        Spinner_Religion_adapter.setDropDownViewResource(R.layout.spinner_layout);
+        Spinner_tract_adapter.setDropDownViewResource(R.layout.spinner_layout_white);
+        spnr_village_tract.setAdapter(Spinner_tract_adapter);
+        setAddressVisiblity(View.VISIBLE, View.VISIBLE, View.VISIBLE);
+    }
+
+    private void getVillage(Integer id) {
+        alertDialog.show();
+
+        JSONObject js = new JSONObject();
+
+        try {
+            js.put("id", "" + id);
+
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        final RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), js.toString());
+        // Dialog start
+        RetrofitApiClient.get().getVillage(body).enqueue(new Callback<village_Response>() {
+            @Override
+            public void onResponse(Call<village_Response> call, Response<village_Response> response) {
+                // dialog End
+                // Log.e("my Response  : ","ppp  :  "+ response.body().toString());
+                Log.e("my Response  : ", "Rajesh  :  " + new Gson().toJson(response));
+                alertDialog.dismiss();
+                Log.e("my Response  : ", response.body().getMessage().toString());
+                if (response.body().getStatusCode() == 0) {
+                    villageList = response.body().getList();
+                    setVillage();
+                } else {
+                    Toast.makeText(getApplicationContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                }
+
+
+            }
+
+
+            @Override
+            public void onFailure(Call<village_Response> call, Throwable t) {
+                Log.e("my Response  : ", t.toString());
+                alertDialog.dismiss();
+            }
+        });
+
+    }
+
+    private void setVillage() {
+        List_Village = new ArrayList<>();
+        List_Village.add("Select Village");
+        for (int i = 0; i < villageList.size(); i++) {
+            List_Village.add(villageList.get(i).getName());
+
+        }
+        Spinner_village_adapter = new ArrayAdapter<String>(mContext, R.layout.spinner_layout_white_text, List_Village);
+//        Spinner_Religion_adapter.setDropDownViewResource(R.layout.spinner_layout);
+        Spinner_village_adapter.setDropDownViewResource(R.layout.spinner_layout_white);
+        spnr_village.setAdapter(Spinner_village_adapter);
+        setAddressVisiblity(View.VISIBLE, View.VISIBLE, View.GONE);
+    }
+
+    private void getTownship(Integer id) {
+
+        alertDialog.show();
+
+        JSONObject js = new JSONObject();
+
+        try {
+            js.put("id", "" + id);
+
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        final RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), js.toString());
+        // Dialog start
+        RetrofitApiClient.get().getTownship(body).enqueue(new Callback<Township_Response>() {
+            @Override
+            public void onResponse(Call<Township_Response> call, Response<Township_Response> response) {
+                // dialog End
+                // Log.e("my Response  : ","ppp  :  "+ response.body().toString());
+                Log.e("my Response  : ", "Rajesh  :  " + new Gson().toJson(response));
+                alertDialog.dismiss();
+                Log.e("my Response  : ", response.body().getMessage().toString());
+                if (response.body().getStatusCode() == 0) {
+                    townsList = response.body().getList();
+                    setTownship();
+                } else {
+                    Toast.makeText(getApplicationContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                }
+
+
+            }
+
+
+            @Override
+            public void onFailure(Call<Township_Response> call, Throwable t) {
+                Log.e("my Response  : ", t.toString());
+                alertDialog.dismiss();
+            }
+        });
+    }
+
+    private void setTownship() {
+        List_Township = new ArrayList<>();
+        List_Township.add("Select Town");
+        for (int i = 0; i < townsList.size(); i++) {
+            List_Township.add(townsList.get(i).getName());
+
+        }
+        Spinner_town_adapter = new ArrayAdapter<String>(mContext, R.layout.spinner_layout_white_text, List_Township);
+//        Spinner_Religion_adapter.setDropDownViewResource(R.layout.spinner_layout);
+        Spinner_town_adapter.setDropDownViewResource(R.layout.spinner_layout_white);
+        spnr_township.setAdapter(Spinner_town_adapter);
+        setAddressVisiblity(View.VISIBLE, View.GONE, View.GONE);
+    }
+
+    private void setAddressVisiblity(int isTownship, int isVillage, int isTract) {
+
+
+        spnr_township.setVisibility(isTownship);
+        spnr_village_tract.setVisibility(isTract);
+        spnr_village.setVisibility(isVillage);
+
     }
 
 
@@ -234,6 +803,17 @@ public class RegistrationActivity extends RootActivity implements DatePickerDial
 
         spnr_season.setAdapter(Spinner_Season_adapter);
 
+        List_sender_catagory = new ArrayList<>();
+        List_sender_catagory.add("Select Catagory");
+        List_sender_catagory.add("Township Seed Inspectors");
+        List_sender_catagory.add("Seed Companies");
+        List_sender_catagory.add("Township Seed Inspectors for Seed Grower Associations Members");
+        List_sender_catagory.add("NGOs");
+        List_sender_catagory.add("Seed Farms");
+
+        Spinner_sender_catagory_adapter = new ArrayAdapter<String>(mContext, R.layout.spinner_layout_white_text, List_sender_catagory);
+        Spinner_sender_catagory_adapter.setDropDownViewResource(android.R.layout.select_dialog_singlechoice);
+        spnr_sender_catagory.setAdapter(Spinner_sender_catagory_adapter);
     }
 
     private void setVerity_data() {
@@ -382,294 +962,6 @@ public class RegistrationActivity extends RootActivity implements DatePickerDial
         });
     }
 
-
-    private void clickevent() {
-        lnt_year_of_production.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                MonthPickerDialog.Builder builder = new MonthPickerDialog.Builder(mContext, new MonthPickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(int selectedMonth, int selectedYear) {
-                        txt_year_of_production.setText(Integer.toString(selectedYear));
-                        year = selectedYear;
-                    }
-                }, year, 0);
-
-                builder.showYearOnly().setYearRange(1990, 2030).build().show();
-            }
-
-        });
-
-        lnt_date_receipt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DT = DateType.DR;
-                datePickerDialog.show();
-            }
-        });
-
-        chk_alltest.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
-                SetAllTestChecked(isChecked);
-
-            }
-        });
-        btn_submit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                checkValidation();
-            }
-        });
-    }
-
-    private void SetAllTestChecked(boolean isChecked) {
-
-        chk_red_rice.setChecked(isChecked);
-        chk_germination.setChecked(isChecked);
-        chk_physical.setChecked(isChecked);
-        chk_moisture.setChecked(isChecked);
-    }
-
-    private void checkValidation() {
-
-        if (edt_sender_name.getText().toString().trim().equalsIgnoreCase("")) {
-            edt_sender_name.setError("requried");
-            edt_sender_name.requestFocus();
-            return;
-
-        } else if (edt_address.getText().toString().trim().equalsIgnoreCase("")) {
-            edt_address.setError("requried");
-            edt_address.requestFocus();
-            return;
-
-        } else if (txt_date_receipt.getText().toString().equalsIgnoreCase("")) {
-            txt_date_receipt.setError("Please Select Date");
-            txt_date_receipt.requestFocus();
-            return;
-        } else if (spnr_crop.getSelectedItemPosition() == 0) {
-            Toast.makeText(getApplicationContext(), "Please Select Crop", Toast.LENGTH_LONG).show();
-            spnr_crop.requestFocus();
-            return;
-
-        } else if (spnr_crop.getSelectedItem().toString().trim().equalsIgnoreCase("Rice") && spnr_varity.getText().toString().equalsIgnoreCase("")) {
-
-            Toast.makeText(getApplicationContext(), "Please Select Varity", Toast.LENGTH_LONG).show();
-            spnr_varity.setError("Please Select Varity");
-            spnr_varity.requestFocus();
-            return;
-
-        }else if(!spnr_crop.getSelectedItem().toString().trim().equalsIgnoreCase("Rice")&&edt_varity.getText().toString().trim().equalsIgnoreCase("")){
-            edt_varity.setError("Please Select Varity");
-            edt_varity.requestFocus();
-            return;
-
-        } if (spnr_region.getSelectedItemPosition() == 0) {
-            Toast.makeText(getApplicationContext(), "Please Select Region", Toast.LENGTH_LONG).show();
-            spnr_region.requestFocus();
-
-            return;
-
-        } else if (txt_year_of_production.getText().toString().equalsIgnoreCase(getResources().getString(R.string.year))) {
-            txt_year_of_production.setError("Please Select Year");
-            txt_year_of_production.requestFocus();
-            return;
-        } else if (spnr_season.getSelectedItemPosition() == 0) {
-            Toast.makeText(getApplicationContext(), "Please Select Season", Toast.LENGTH_LONG).show();
-            spnr_season.requestFocus();
-
-            return;
-
-        } else if (edt_lot_no.getText().toString().trim().equalsIgnoreCase("")) {
-            edt_lot_no.setError("requried");
-            edt_lot_no.requestFocus();
-
-            return;
-
-
-        } else if (spnr_seeds.getSelectedItemPosition() == 0) {
-            Toast.makeText(getApplicationContext(), "Please Select Seed", Toast.LENGTH_LONG).show();
-            spnr_seeds.requestFocus();
-            return;
-
-
-        } else if (!isAnyboxChecked()) {
-            Toast.makeText(getApplicationContext(), "Please Select TEST to be done", Toast.LENGTH_LONG).show();
-            return;
-
-        } else if (edt_smple_qty.getText().toString().trim().equalsIgnoreCase("")) {
-
-            edt_smple_qty.setError("requried");
-            edt_smple_qty.requestFocus();
-
-            return;
-
-        } else if (RDGcrop_status.getCheckedRadioButtonId() == -1) {
-            Toast.makeText(getApplicationContext(), "Please Select Product Quality", Toast.LENGTH_LONG).show();
-            return;
-        } else if (isVaritySpinner && spnr_varity.getText().toString().trim().equalsIgnoreCase("")) {
-            //       Log.e("i m heree ...1111 ","posoition  "+spnr_varity.getSelectedItemPosition());
-
-            Toast.makeText(getApplicationContext(), "Please Select Varity", Toast.LENGTH_LONG).show();
-            return;
-
-        } else if (!isVaritySpinner && edt_varity.getText().toString().trim().equalsIgnoreCase("")) {
-            edt_varity.setError("Requried");
-            return;
-
-
-        } else {
-            Log.e("All Set ", "All Set ");
-            Toast.makeText(getApplicationContext(), "All data is selected No save it", Toast.LENGTH_SHORT).show();
-
-            String crop_name, region_name, season_name, gmTest, moTest, phTest, redTest, alltest, seed_name, select_pacaking, varityName;
-            crop_name = CropList.get(spnr_crop.getSelectedItemPosition() - 1).getId().toString();
-            region_name = RegionList.get(spnr_region.getSelectedItemPosition() - 1).getId().toString();
-            season_name = getSeason();
-            seed_name = SeedsList.get(spnr_seeds.getSelectedItemPosition() - 1).getId().toString();
-
-            if (isVaritySpinner) {
-                varityName = spnr_varity.getText().toString().trim();
-            } else {
-                varityName = edt_varity.getText().toString();
-            }
-            int selectedId = RDGcrop_status.getCheckedRadioButtonId();
-            Log.e("radio button value", "" + selectedId);
-            select_pacaking = "" + 0;
-
-            int id = RDGcrop_status.getCheckedRadioButtonId();
-            View radioButton = RDGcrop_status.findViewById(id);
-            int radioId = RDGcrop_status.indexOfChild(radioButton);
-
-            RadioButton btn = (RadioButton) RDGcrop_status.getChildAt(radioId);
-            String selection = (String) btn.getText();
-            select_pacaking = selection;
-
-            boolean isAlltest = chk_alltest.isChecked();
-
-
-            alltest = "0";
-            gmTest = checkedtest(chk_germination);
-            redTest = checkedtest(chk_red_rice);
-            phTest = checkedtest(chk_physical);
-            moTest = checkedtest(chk_moisture);
-
-
-            RegisterSeeds(edt_sender_name.getText().toString().trim(), edt_address.getText().toString().trim(), txt_date_receipt.getText().toString(), crop_name, varityName, region_name, season_name, edt_lot_no.getText().toString().trim(), seed_name, edt_smple_qty.getText().toString().trim(), select_pacaking, txt_year_of_production.getText().toString(), gmTest, moTest, phTest, redTest, alltest);
-
-
-        }
-
-    }
-
-    private String checkedtest(CheckBox chkBox) {
-
-        if (chkBox.isChecked()) {
-            return "1";
-        } else {
-            return "0";
-        }
-    }
-
-
-    private String getSeason() {
-
-        String value = spnr_season.getSelectedItem().toString();
-        if (value.equalsIgnoreCase("Summer")) {
-            return "1";
-        } else {
-            return "2";
-        }
-
-
-    }
-
-    private void RegisterSeeds(String senderName, String address, String dateOfReceipt, String crop, String variety, String region, String season, String lotNo, String seedClass, String sampleQty, String packing, String year, String germinationTest, String moistureTest, String physicalPurityTest, String redRiceTest, String allTest) {
-
-
-        JSONObject js = new JSONObject();
-
-        try {
-            js.put("senderName", senderName);
-            js.put("address", address);
-            js.put("dateOfReceipt", dateOfReceipt);
-            js.put("corp", crop);
-            js.put("variety", variety);
-            js.put("region", region);
-            js.put("season", season);
-            js.put("lotNo", lotNo);
-            js.put("seedClass", seedClass);
-            js.put("sampleQty", sampleQty);
-            js.put("packing", packing);
-            js.put("year", year);
-            js.put("germinationTest", germinationTest);
-            js.put("moistureTest", moistureTest);
-            js.put("physicalPurityTest", physicalPurityTest);
-            js.put("redRiceTest", redRiceTest);
-            js.put("allTest", allTest);
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        Log.e("Params ", "Values  : " + js.toString());
-
-        //  alertDialog.show();
-        final RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), (js.toString()));
-        // Dialog start
-        RetrofitApiClient.get().SaveSample(body).enqueue(new Callback<Regionresponse>() {
-            @Override
-            public void onResponse(Call<Regionresponse> call, Response<Regionresponse> response) {
-                // dialog End
-                // Log.e("my Response  : ","ppp  :  "+ response.body().toString());
-                Log.e("my Response  : ", "Rajesh  :  " + new Gson().toJson(response));
-                //        alertDialog.dismiss();
-                Log.e("my Response  : ", response.body().getMessage().toString());
-                if (response.body().getStatusCode() == 0) {
-                    Log.e("my Response  : ", response.body().getMessage().toString());
-
-                    new SweetAlertDialog(mContext, SweetAlertDialog.SUCCESS_TYPE).setTitleText("Registration Succesfull!").setContentText("Please Note Your LAB REF No :  " + response.body().getMessage().toString()).show();
-                    clearData();
-                } else {
-                    Toast.makeText(getApplicationContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                }
-
-
-            }
-
-
-            @Override
-            public void onFailure(Call<Regionresponse> call, Throwable t) {
-                Log.e("my Response  : ", t.toString());
-                alertDialog.dismiss();
-            }
-        });
-
-
-    }
-
-    private void clearData() {
-
-        edt_sender_name.setText("");
-        edt_address.setText("");
-        // txt_date_receipt.setText("");
-        setCurrentDate();
-        spnr_crop.setSelection(0);
-        spnr_region.setSelection(0);
-        txt_year_of_production.setText("YEAR");
-        spnr_season.setSelection(0);
-        edt_lot_no.setText("");
-        spnr_seeds.setSelection(0);
-        chk_alltest.setChecked(false);
-        SetAllTestChecked(false);
-        edt_smple_qty.setText("");
-        rb_good.setChecked(false);
-        rb_not_good.setChecked(false);
-        edt_sender_name.requestFocus();
-
-    }
-
-
     private boolean isAnyboxChecked() {
         boolean isAnyCheck = false;
 
@@ -701,7 +993,6 @@ public class RegistrationActivity extends RootActivity implements DatePickerDial
 
         edt_smple_qty = (EditText) findViewById(R.id.edt_smple_qty);
         edt_lot_no = (EditText) findViewById(R.id.edt_lot_no);
-        edt_address = (EditText) findViewById(R.id.edt_address);
         edt_sender_name = (EditText) findViewById(R.id.edt_sender_name);
         edt_varity = (EditText) findViewById(R.id.edt_varity);
 
@@ -715,9 +1006,19 @@ public class RegistrationActivity extends RootActivity implements DatePickerDial
         chk_red_rice = (CheckBox) findViewById(R.id.chk_red_rice);
         chk_alltest = (CheckBox) findViewById(R.id.chk_alltest);
 
+        spnr_sender_catagory = (Spinner) findViewById(R.id.spnr_sender_catagory);
+        spnr_village_tract = (Spinner) findViewById(R.id.spnr_village_tract);
+        spnr_village = (Spinner) findViewById(R.id.spnr_village);
+        spnr_township = (Spinner) findViewById(R.id.spnr_township);
+
+
         CropList = new ArrayList<>();
         RegionList = new ArrayList<>();
         VarityList = new ArrayList<>();
+
+        townsList = new ArrayList<>();
+        villageList = new ArrayList<>();
+        tractList = new ArrayList<>();
 
         setCurrentDate();
 

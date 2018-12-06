@@ -22,11 +22,12 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitApiClient {
 
-        // exctiel
-        private static final String BASE_URL = "http://192.168.0.145:8080/Seeds/";
-        // Bailiwick 2g
-        // private static final String BASE_URL = "http://192.168.0.145:8080/Seeds/";
+    // exctiel
+    //       private static final String BASE_URL = "http://192.168.0.145:8080/Seeds/";
+    // Bailiwick 2g
+    // private static final String BASE_URL = "http://192.168.0.145:8080/Seeds/";
 
+    private static final String BASE_URL = "http://192.168.137.1:8080/Seeds/";
 
 //    private static final String BASE_URL = "http://103.206.248.236:15000/Seeds/";
 
