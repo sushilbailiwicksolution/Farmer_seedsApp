@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">Pathein Seeds laboratory</string>
+    <string name="app_logo"><font fgcolor="#6fda44">Pathein </font><font> " "</font><font fgcolor="#26a9df">Seeds</font></string>
+    <string name="version">version 1.6</string>
+    <string name="Register">Register</string>
+    <string name="Moisture">Moisture Test</string>
+    <string name="Physical">Physical Purity Test</string>
+    <string name="Germination">Germination Test</string>
+    <string name="RedRice">Red Rice Test</string>
+
+    <!--registration Screen-->
+
+    <string name="Date_of_Receipt">Date of Receipt</string>
+
+    <string name="date_of_receipt">Date of Receipt</string>
+    <string name="date_of_sample_receipt">Date of Sample Receipt</string>
+    <string name="date_of_report">Date of Report</string>
+    <string name="date_of_issue">Date of Issue</string>
+    <string name="date_of_test">Date of Test</string>
+    <string name="date_of_putting2">DATE OF PUTTING</string>
+    <string name="year">YEAR</string>
+    <string name="date_of_putting">Date of Putting</string>
+
+    <string name="dialog_default_title">Here\'s a message!</string>
+    <string name="dialog_ok">OK</string>
+    <string name="dialog_cancel">Cancel</string>
+    <string name="LOADING">Loading...</string>
+
+</resources>
+
