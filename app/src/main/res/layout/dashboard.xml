@@ -54,6 +54,7 @@
         </LinearLayout>
         <!--Bootom Divider ONE-->
         <LinearLayout
+            android:id="@+id/lnt_head1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -196,6 +197,8 @@
         </LinearLayout>
         <!--Bootom Divider two-->
         <LinearLayout
+            android:id="@+id/lnt_head2"
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"

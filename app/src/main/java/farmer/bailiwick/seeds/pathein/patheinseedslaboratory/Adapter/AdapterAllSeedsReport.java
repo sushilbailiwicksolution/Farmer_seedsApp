@@ -80,6 +80,8 @@ public class AdapterAllSeedsReport extends RecyclerView.Adapter<AdapterAllSeedsR
             holder.txt_view_report.setVisibility(View.GONE);
 
         }
+        Log.e("is report",position+ "repot value"+isReportAvail);
+
         holder.txt_view_report.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -108,7 +110,12 @@ public class AdapterAllSeedsReport extends RecyclerView.Adapter<AdapterAllSeedsR
         if (value.equalsIgnoreCase("2")) {
             textview.setVisibility(View.GONE);
 
-        } else if (value.equalsIgnoreCase("3")) {
+        } else {
+            textview.setVisibility(View.VISIBLE);
+
+        }
+
+        if (value.equalsIgnoreCase("3")) {
             textview.setTextColor(context.getResources().getColor(R.color.app_red));
         } else if (value.equalsIgnoreCase("4")) {
             textview.setTextColor(context.getResources().getColor(R.color.green));

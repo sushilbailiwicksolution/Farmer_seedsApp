@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -40,6 +41,8 @@ public class DashBoardActivity extends RootActivity {
     ShimmerTextView txt_header;
     CardView crd_registration, crd_moisture_test, crd_physical_purity, crd_germiantion, crd_red_rice, crd_reports;
     Context mContext;
+    LinearLayout lnt_head2, lnt_head1;
+
     RecyclerView recyclerview_Lab_ref;
     String employee_id, role_id;
 
@@ -125,16 +128,18 @@ public class DashBoardActivity extends RootActivity {
         crd_red_rice = (CardView) findViewById(R.id.crd_red_rice);
         crd_reports = (CardView) findViewById(R.id.crd_reports);
 
-        Log.e("roll id is ", ItagExtra.RollAdmin+"   Roll id is ==  " + role_id);
-        if (role_id.equalsIgnoreCase(ItagExtra.RollAdmin) ) {
-            Log.e("roll id is ", "i m here...  "+role_id);
+        lnt_head2 = (LinearLayout) findViewById(R.id.lnt_head2);
+        lnt_head1 = (LinearLayout) findViewById(R.id.lnt_head1);
 
+
+        Log.e("roll id is ", ItagExtra.RollAdmin + "   Roll id is ==  " + role_id);
+        if (role_id.equalsIgnoreCase(ItagExtra.RollAdmin)) {
+            Log.e("roll id is ", "i m here...  " + role_id);
             crd_registration.setVisibility(View.GONE);
-            crd_moisture_test.setVisibility(View.GONE);
-            crd_physical_purity.setVisibility(View.GONE);
-            crd_germiantion.setVisibility(View.GONE);
-            crd_red_rice.setVisibility(View.GONE);
-        }else if(role_id.equalsIgnoreCase(ItagExtra.RollEmployee)){
+            lnt_head2.setVisibility(View.GONE);
+            lnt_head1.setVisibility(View.GONE);
+
+        } else if (role_id.equalsIgnoreCase(ItagExtra.RollEmployee)) {
             crd_reports.setVisibility(View.GONE);
         }
     }
