@@ -68,10 +68,25 @@ public class AdapterAllSeedsReport extends RecyclerView.Adapter<AdapterAllSeedsR
         String Gtest = ListBeanList.get(position).getGerminationTest();
         String Rtest = ListBeanList.get(position).getRedRiceTest();
 
-        checkAndSet(holder.txt_germination_status, Gtest);
-        checkAndSet(holder.txt_moisture_status, Mtest);
-        checkAndSet(holder.txt_physical_status, Ptest);
-        checkAndSet(holder.txt_red_rice_status, Rtest);
+//        checkAndSet(holder.txt_germination_status, Gtest);
+        //      checkAndSet(holder.txt_moisture_status, Mtest);
+        //    checkAndSet(holder.txt_physical_status, Ptest);
+        //  checkAndSet(holder.txt_red_rice_status, Rtest);
+        if (Mtest.equalsIgnoreCase("2")) {
+            holder.txt_moisture_status.setVisibility(View.GONE);
+        } else {
+            holder.txt_moisture_status.setVisibility(View.VISIBLE);
+        }
+
+        if (Mtest.equalsIgnoreCase("3")) {
+            holder.txt_moisture_status.setTextColor(context.getResources().getColor(R.color.app_red));
+        } else if (Mtest.equalsIgnoreCase("4")) {
+            holder.txt_moisture_status.setTextColor(context.getResources().getColor(R.color.green));
+        } else {
+            holder.txt_moisture_status.setTextColor(context.getResources().getColor(R.color.base_color));
+        }
+
+
 
         boolean isReportAvail = isReportAvail(Gtest, Mtest, Ptest, Rtest);
         if (isReportAvail) {
@@ -80,7 +95,7 @@ public class AdapterAllSeedsReport extends RecyclerView.Adapter<AdapterAllSeedsR
             holder.txt_view_report.setVisibility(View.GONE);
 
         }
-        Log.e("is report",position+ "repot value"+isReportAvail);
+        Log.e("is report", position + "repot value" + isReportAvail);
 
         holder.txt_view_report.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,10 +113,16 @@ public class AdapterAllSeedsReport extends RecyclerView.Adapter<AdapterAllSeedsR
     }
 
     private boolean isReportAvail(String gtest, String mtest, String ptest, String rtest) {
+        Log.e("check value", "  " + gtest + "  " + mtest + "  " + ptest + "  " + rtest+ "  position  ");
+
         if (gtest.equalsIgnoreCase("3") || mtest.equalsIgnoreCase("3") || ptest.equalsIgnoreCase("3") || rtest.equalsIgnoreCase("3")) {
+
             return false;
 
-        } else {
+        }else  if (gtest.equalsIgnoreCase("2") || mtest.equalsIgnoreCase("2") || ptest.equalsIgnoreCase("2") || rtest.equalsIgnoreCase("2")) {
+            return false;
+
+        }else {
             return true;
         }
     }

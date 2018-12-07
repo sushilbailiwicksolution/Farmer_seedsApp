@@ -556,7 +556,7 @@ public class GerminationTest extends RootActivity implements DatePickerDialog.On
         shimmer = new Shimmer();
         shimmer.start(txt_header);
 
-        alertDialog = new SpotsDialog.Builder().setContext(this).build();
+        alertDialog = new SpotsDialog.Builder().setContext(this).setTheme(R.style.spot_custom).build();
         alertDialog.setTitle("Seeds");
         alertDialog.setMessage("Please wait.....");
         setCurrentDate();

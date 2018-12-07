@@ -31,6 +31,10 @@ public class AdapterSeedRegistrationList extends RecyclerView.Adapter<AdapterSee
         void onItemClick(int position);
     }
 
+    public void updateList(List<Report_List_For_AddResponse.ListReoprtData> list) {
+        ListBeanList = list;
+        notifyDataSetChanged();
+    }
 
     public AdapterSeedRegistrationList(Context context, List<Report_List_For_AddResponse.ListReoprtData> cartListBeanList, ItemClickRecListInterface itemClickRecListInterface) {
         this.context = context;
@@ -44,9 +48,7 @@ public class AdapterSeedRegistrationList extends RecyclerView.Adapter<AdapterSee
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View view = LayoutInflater.from(context).inflate(R.layout.cst_testing_reports, parent, false);
-
         ViewHolder viewHolder = new ViewHolder(view);
-
         return viewHolder;
     }
 

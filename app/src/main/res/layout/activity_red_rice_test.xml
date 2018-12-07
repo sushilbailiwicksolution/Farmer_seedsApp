@@ -27,11 +27,11 @@
                 android:text="@string/RedRice"
                 android:textAlignment="center"
                 android:textAllCaps="true"
-                android:textColor="@color/blue_main"
+                android:textColor="@color/white"
                 android:textSize="18sp"
 
                 android:textStyle="bold"
-                app:reflectionColor="#fff" />
+                app:reflectionColor="@color/colorAccent" />
 
 
         </android.support.v7.widget.Toolbar>
@@ -311,6 +311,7 @@
 
                             <RadioButton
                                 android:id="@+id/rb_method1"
+                                style="@style/MyCheckBox"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="5dp"
@@ -318,6 +319,7 @@
 
                             <RadioButton
                                 android:id="@+id/rb_method2"
+                                style="@style/MyCheckBox"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="5dp"
@@ -403,7 +405,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="5dp"
                                 android:padding="5dp"
-                                android:text="222 "
+                                android:text=""
                                 android:textColor="@color/base_color"
                                 android:textSize="16sp"
                                 android:textStyle="bold" />
@@ -491,7 +493,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="5dp"
                                 android:padding="5dp"
-                                android:text="222 "
+                                android:text=""
                                 android:textColor="@color/base_color"
                                 android:textSize="16sp"
                                 android:textStyle="bold" />
@@ -619,12 +621,14 @@
 
                             <RadioButton
                                 android:id="@+id/rb_accept"
+                                style="@style/MyCheckBox"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Acceptable" />
 
                             <RadioButton
                                 android:id="@+id/rb_not_accept"
+                                style="@style/MyCheckBox"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="5dp"

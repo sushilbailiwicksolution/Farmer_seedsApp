@@ -27,11 +27,11 @@
                 android:text="@string/Moisture"
                 android:textAlignment="center"
                 android:textAllCaps="true"
-                android:textColor="@color/blue_main"
+                android:textColor="@color/white"
                 android:textSize="18sp"
 
                 android:textStyle="bold"
-                app:reflectionColor="#fff" />
+                app:reflectionColor="@color/colorAccent" />
 
 
         </android.support.v7.widget.Toolbar>
@@ -738,7 +738,7 @@
                             android:paddingLeft="4dp"
                             android:paddingRight="4dp"
                             android:text="Analys"
-                            android:textColor="#000000"
+                            android:textColor="@color/colorPrimary"
                             android:textSize="18sp" />
 
                         <android.support.design.widget.TextInputLayout

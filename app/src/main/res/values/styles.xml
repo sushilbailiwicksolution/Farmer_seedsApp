@@ -14,6 +14,7 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
+
     <style name="MyAppThemeFullScreen" parent="Theme.AppCompat">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -35,14 +36,14 @@
         <item name="colorAccent">@color/purple</item>
     </style>
 
-   <!-- <style name="SplashTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="android:windowBackground">@drawable/splashscreen</item>
-    </style>-->
+    <!-- <style name="SplashTheme" parent="Theme.AppCompat.Light.NoActionBar">
+         <item name="android:windowBackground">@drawable/splashscreen</item>
+     </style>-->
 
     <style name="MyToolbarStyle">
-    <item name="android:maxHeight">@dimen/abc_action_bar_default_height_material</item>
-    <item name="android:background">#293139</item>
-    <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+        <item name="android:maxHeight">@dimen/abc_action_bar_default_height_material</item>
+        <item name="android:background">#293139</item>
+        <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
     </style>
 
     <style name="mySpinnerStyle" parent="android:Widget.ListView.DropDown">
@@ -52,9 +53,8 @@
 
     <style name="MyCheckBox" parent="Theme.AppCompat.Light">
         <item name="colorControlNormal">@color/colorAccent</item>
-        <item name="colorControlActivated">@color/blue_main</item>
+        <item name="colorControlActivated">@color/colorPrimary</item>
     </style>
-
 
 
     <!--Alert Dialog Style-->
@@ -77,5 +77,16 @@
         <item name="android:paddingLeft">21dp</item>
         <item name="android:paddingRight">21dp</item>
         <item name="android:textColor">@color/button_text_color</item>
+    </style>
+
+    <!--    Spot dialog progress custom-->
+
+    <style name="spot_custom" parent="android:Theme.DeviceDefault.Light.Dialog">
+        <item name="DialogTitleAppearance">@android:style/TextAppearance.Medium</item>
+        <item name="DialogSpotColor">@color/colorPrimary</item>
+        <item name="DialogSpotCount">4</item>
+        <item name="android:background">@color/white</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+
     </style>
 </resources>

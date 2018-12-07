@@ -26,13 +26,11 @@
                 android:layout_height="wrap_content"
                 android:text="@string/Register"
                 android:textAlignment="center"
-                android:textAllCaps="true"
-                android:textColor="@color/blue_main"
+                android:textColor="@color/white"
                 android:textSize="18sp"
 
                 android:textStyle="bold"
-                app:reflectionColor="#fff" />
-
+                app:reflectionColor="@color/colorAccent" />
 
         </android.support.v7.widget.Toolbar>
 
@@ -54,6 +52,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="2dp"
+
                     card_view:cardBackgroundColor="@color/white"
                     card_view:cardCornerRadius="10dp"
                     card_view:cardElevation="5dp"
@@ -158,6 +157,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="2dp"
+
                     card_view:cardBackgroundColor="@color/white"
                     card_view:cardCornerRadius="10dp"
                     card_view:cardElevation="5dp"
@@ -315,6 +315,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="2dp"
+
                     card_view:cardBackgroundColor="@color/white"
                     card_view:cardCornerRadius="10dp"
                     card_view:cardElevation="5dp"
@@ -545,46 +546,90 @@
                                 android:textStyle="bold"
                                 android:theme="@style/MyCheckBox" />
 
-                            <CheckBox
-                                android:id="@+id/chk_red_rice"
-                                android:layout_width="wrap_content"
+                            <LinearLayout
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="Red Rice Test"
-                                android:textColor="@color/colorPrimary"
-                                android:textStyle="bold"
-                                android:theme="@style/MyCheckBox" />
+                                android:orientation="horizontal">
 
-                            <CheckBox
-                                android:id="@+id/chk_germination"
-                                android:layout_width="wrap_content"
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
+
+                                    <CheckBox
+                                        android:id="@+id/chk_red_rice"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:text="Red Rice"
+                                        android:textColor="@color/colorPrimary"
+                                        android:textStyle="bold"
+                                        android:theme="@style/MyCheckBox" />
+
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
+
+                                    <CheckBox
+                                        android:id="@+id/chk_germination"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:text="Germination"
+                                        android:textColor="@color/colorPrimary"
+                                        android:textStyle="bold"
+
+                                        android:theme="@style/MyCheckBox" />
+
+                                </LinearLayout>
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="Germination test"
-                                android:textColor="@color/colorPrimary"
-                                android:textStyle="bold"
+                                android:orientation="horizontal"
+                                android:weightSum="2">
 
-                                android:theme="@style/MyCheckBox" />
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
 
-                            <CheckBox
-                                android:id="@+id/chk_physical"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="Physical purity Test"
-                                android:textColor="@color/colorPrimary"
-                                android:textStyle="bold"
-                                android:theme="@style/MyCheckBox" />
+                                    <CheckBox
+                                        android:id="@+id/chk_physical"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Physical purity"
+                                        android:textColor="@color/colorPrimary"
+                                        android:textStyle="bold"
+                                        android:theme="@style/MyCheckBox" />
+                                </LinearLayout>
 
-                            <CheckBox
-                                android:id="@+id/chk_moisture"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="Moisture test"
-                                android:textColor="@color/colorPrimary"
-                                android:textStyle="bold"
-                                android:theme="@style/MyCheckBox" />
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
+
+                                    <CheckBox
+                                        android:id="@+id/chk_moisture"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Moisture"
+                                        android:textColor="@color/colorPrimary"
+                                        android:textStyle="bold"
+                                        android:theme="@style/MyCheckBox" />
+
+                                </LinearLayout>
+                            </LinearLayout>
+
                         </LinearLayout>
 
 
@@ -629,14 +674,16 @@
                                     android:id="@+id/rb_good"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Good" />
+                                    android:text="Good"
+                                    android:theme="@style/MyCheckBox" />
 
                                 <RadioButton
                                     android:id="@+id/rb_not_good"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginLeft="5dp"
-                                    android:text="Not Good" />
+                                    android:text="Not Good"
+                                    android:theme="@style/MyCheckBox" />
                             </RadioGroup>
                         </LinearLayout>
 

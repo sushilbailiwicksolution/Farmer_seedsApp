@@ -4,7 +4,7 @@ android {
     compileSdkVersion 27
     defaultConfig {
         applicationId "farmer.bailiwick.seeds.pathein.patheinseedslaboratory"
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
@@ -42,5 +42,5 @@ dependencies {
     implementation 'com.github.d-max:spots-dialog:1.1@aar'
     compile 'com.pnikosis:materialish-progress:1.7'
     compile 'com.android.support:multidex:1.0.1'
-
+    implementation 'com.github.mancj:MaterialSearchBar:0.8.1'
 }

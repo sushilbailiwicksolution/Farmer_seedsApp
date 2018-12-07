@@ -4,15 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-android:background="@color/color_black"
+    android:background="@drawable/splash_bg"
 
     tools:context=".Activites.Splash">
+
     <ImageView
         android:id="@+id/img_logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
         android:layout_centerInParent="true"
+        android:layout_gravity="center"
         android:gravity="center|bottom"
         android:src="@drawable/logo200" />
 
@@ -20,27 +21,29 @@ android:background="@color/color_black"
         android:id="@+id/txt_header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-     android:layout_below="@+id/img_logo"
+        android:layout_below="@+id/img_logo"
+        android:layout_centerInParent="true"
         android:gravity="center"
         android:padding="4dp"
-        android:layout_centerInParent="true"
-        android:textAllCaps="true"
-        app:reflectionColor="#f00"
         android:text="Pathein Seed Lab"
-        android:textColor="@color/white"
-        android:textSize="30sp" />
+        android:textAllCaps="true"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:reflectionColor="@color/white" />
 
     <com.romainpiel.shimmer.ShimmerTextView
         android:id="@+id/txt_version"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/txt_header"
-        android:padding="4dp"
         android:layout_centerInParent="true"
-        android:textAllCaps="true"
-        app:reflectionColor="#f00"
+        android:padding="4dp"
         android:text="@string/version"
-        android:textColor="@color/white"
-        android:textSize="18sp" />
+        android:textAllCaps="true"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:reflectionColor="@color/white" />
 
 </RelativeLayout>

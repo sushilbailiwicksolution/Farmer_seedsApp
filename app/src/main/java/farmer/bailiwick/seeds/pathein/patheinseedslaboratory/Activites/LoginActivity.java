@@ -110,13 +110,14 @@ public class LoginActivity extends RootActivity {
         }
         Log.e("Params ", "Values  : " + js.toString());
 
-//          alertDialog.show();
+        alertDialog.show();
         final RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), (js.toString()));
         // Dialog start
         RetrofitApiClient.get().LoginTask(body).enqueue(new Callback<SaveLoginResponse>() {
             @Override
             public void onResponse(Call<SaveLoginResponse> call, Response<SaveLoginResponse> response) {
                 // dialog End
+                alertDialog.dismiss();
                 // Log.e("my Response  : ","ppp  :  "+ response.body().toString());
                 Log.e("my Response  : ", "Rajesh  :  " + new Gson().toJson(response));
                 //        alertDialog.dismiss();
@@ -166,7 +167,7 @@ public class LoginActivity extends RootActivity {
         edt_user_name.setText("emp1@gmail.com");
         edt_password.setText("123456");
 
-        alertDialog = new SpotsDialog.Builder().setContext(this).build();
+        alertDialog = new SpotsDialog.Builder().setContext(this).setTheme(R.style.spot_custom).build();
         alertDialog.setTitle("Seeds");
         alertDialog.setMessage("Please wait.....");
     }

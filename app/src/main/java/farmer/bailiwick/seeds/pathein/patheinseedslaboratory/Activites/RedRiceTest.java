@@ -679,7 +679,7 @@ public class RedRiceTest extends RootActivity implements DatePickerDialog.OnDate
         shimmer = new Shimmer();
         shimmer.start(txt_header);
 
-        alertDialog = new SpotsDialog.Builder().setContext(this).build();
+        alertDialog = new SpotsDialog.Builder().setContext(this).setTheme(R.style.spot_custom).build();
         alertDialog.setTitle("Seeds");
         alertDialog.setMessage("Please wait.....");
 

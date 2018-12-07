@@ -27,11 +27,11 @@
                 android:text="@string/Germination"
                 android:textAlignment="center"
                 android:textAllCaps="true"
-                android:textColor="@color/blue_main"
+                android:textColor="@color/white"
                 android:textSize="18sp"
 
                 android:textStyle="bold"
-                app:reflectionColor="#fff" />
+                app:reflectionColor="@color/colorAccent" />
 
 
         </android.support.v7.widget.Toolbar>

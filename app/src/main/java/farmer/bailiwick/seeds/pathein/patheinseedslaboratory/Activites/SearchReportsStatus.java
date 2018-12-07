@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.mancj.materialsearchbar.MaterialSearchBar;
 
 import org.json.JSONObject;
 
@@ -46,6 +47,10 @@ public class SearchReportsStatus extends RootActivity implements DatePickerDialo
     LinearLayout lnt_start_date, lnt_end_date;
     RecyclerView recyclerview_Lab_ref;
 
+
+    ImageView img_search_enable;
+    MaterialSearchBar searchBar;
+    
     android.app.AlertDialog alertDialog;
     Context mContext;
     List<Report_status_Response.ListData> ReportList;

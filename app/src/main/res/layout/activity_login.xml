@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/bg_color"
+    android:background="@drawable/splash_bg"
     android:orientation="vertical"
    >
 
@@ -22,7 +22,6 @@
             android:layout_height="wrap_content"
             android:text="@string/app_logo"
             android:textAlignment="center"
-
             android:textSize="18sp"
             android:textStyle="bold" />
 
@@ -90,6 +89,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:gravity="right"
+
             android:orientation="vertical"
             android:paddingTop="14dp">
 
@@ -99,9 +99,10 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
                 android:clickable="true"
+                android:textColor="@color/base_color"
                 android:gravity="right"
                 android:text="Forgot Password"
-                android:textSize="12sp" />
+                />
         </LinearLayout>
 
         <LinearLayout
