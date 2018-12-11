@@ -37,6 +37,11 @@ public class AdapterAllSeedsReport extends RecyclerView.Adapter<AdapterAllSeedsR
         void onGItemClick(int position);
     }
 
+    public void updateList(List<Report_status_Response.ListData> list) {
+        ListBeanList = list;
+        notifyDataSetChanged();
+    }
+
     public AdapterAllSeedsReport(Context context, List<Report_status_Response.ListData> cartListBeanList, ReportClickRecListInterface itemClickRecListInterface, GerminationClickRecListInterface gClick) {
         this.context = context;
         this.ListBeanList = cartListBeanList;
@@ -62,16 +67,13 @@ public class AdapterAllSeedsReport extends RecyclerView.Adapter<AdapterAllSeedsR
 
         holder.txt_labrefrence_no.setText("Lab Ref No : " + ListBeanList.get(position).getLabReferenceCode());
         holder.txt_name.setText("Sender's Name : " + ListBeanList.get(position).getName());
-        holder.txt_date.setText("");
+        holder.txt_date.setText(ListBeanList.get(position).getDate());
         String Mtest = ListBeanList.get(position).getMoistureTest();
         String Ptest = ListBeanList.get(position).getPhysicalTest();
         String Gtest = ListBeanList.get(position).getGerminationTest();
         String Rtest = ListBeanList.get(position).getRedRiceTest();
 
-//        checkAndSet(holder.txt_germination_status, Gtest);
-        //      checkAndSet(holder.txt_moisture_status, Mtest);
-        //    checkAndSet(holder.txt_physical_status, Ptest);
-        //  checkAndSet(holder.txt_red_rice_status, Rtest);
+        // Mositure
         if (Mtest.equalsIgnoreCase("2")) {
             holder.txt_moisture_status.setVisibility(View.GONE);
         } else {
@@ -87,6 +89,52 @@ public class AdapterAllSeedsReport extends RecyclerView.Adapter<AdapterAllSeedsR
         }
 
 
+        // Germination
+        if (Gtest.equalsIgnoreCase("2")) {
+            holder.txt_germination_status.setVisibility(View.GONE);
+        } else {
+            holder.txt_germination_status.setVisibility(View.VISIBLE);
+        }
+
+        if (Gtest.equalsIgnoreCase("3")) {
+            holder.txt_germination_status.setTextColor(context.getResources().getColor(R.color.app_red));
+        } else if (Mtest.equalsIgnoreCase("4")) {
+            holder.txt_germination_status.setTextColor(context.getResources().getColor(R.color.green));
+        } else {
+            holder.txt_germination_status.setTextColor(context.getResources().getColor(R.color.base_color));
+        }
+
+        // Physical
+        if (Ptest.equalsIgnoreCase("2")) {
+            holder.txt_physical_status.setVisibility(View.GONE);
+        } else {
+            holder.txt_physical_status.setVisibility(View.VISIBLE);
+        }
+
+        if (Ptest.equalsIgnoreCase("3")) {
+            holder.txt_physical_status.setTextColor(context.getResources().getColor(R.color.app_red));
+        } else if (Mtest.equalsIgnoreCase("4")) {
+            holder.txt_physical_status.setTextColor(context.getResources().getColor(R.color.green));
+        } else {
+            holder.txt_physical_status.setTextColor(context.getResources().getColor(R.color.base_color));
+        }
+
+        // Red Rice
+        if (Rtest.equalsIgnoreCase("2")) {
+            holder.txt_red_rice_status.setVisibility(View.GONE);
+        } else {
+            holder.txt_red_rice_status.setVisibility(View.VISIBLE);
+        }
+
+        if (Rtest.equalsIgnoreCase("3")) {
+            holder.txt_red_rice_status.setTextColor(context.getResources().getColor(R.color.app_red));
+        } else if (Mtest.equalsIgnoreCase("4")) {
+            holder.txt_red_rice_status.setTextColor(context.getResources().getColor(R.color.green));
+        } else {
+            holder.txt_red_rice_status.setTextColor(context.getResources().getColor(R.color.base_color));
+        }
+
+        ////////////////////// View report ////////////////////////////////
 
         boolean isReportAvail = isReportAvail(Gtest, Mtest, Ptest, Rtest);
         if (isReportAvail) {
@@ -112,17 +160,20 @@ public class AdapterAllSeedsReport extends RecyclerView.Adapter<AdapterAllSeedsR
 
     }
 
+    private void MoistureCheck(String mtest) {
+    }
+
     private boolean isReportAvail(String gtest, String mtest, String ptest, String rtest) {
-        Log.e("check value", "  " + gtest + "  " + mtest + "  " + ptest + "  " + rtest+ "  position  ");
+        Log.e("check value", "  " + gtest + "  " + mtest + "  " + ptest + "  " + rtest + "  position  ");
 
         if (gtest.equalsIgnoreCase("3") || mtest.equalsIgnoreCase("3") || ptest.equalsIgnoreCase("3") || rtest.equalsIgnoreCase("3")) {
 
             return false;
 
-        }else  if (gtest.equalsIgnoreCase("2") || mtest.equalsIgnoreCase("2") || ptest.equalsIgnoreCase("2") || rtest.equalsIgnoreCase("2")) {
+        } else if (gtest.equalsIgnoreCase("2") && mtest.equalsIgnoreCase("2") && ptest.equalsIgnoreCase("2") && rtest.equalsIgnoreCase("2")) {
             return false;
 
-        }else {
+        } else {
             return true;
         }
     }

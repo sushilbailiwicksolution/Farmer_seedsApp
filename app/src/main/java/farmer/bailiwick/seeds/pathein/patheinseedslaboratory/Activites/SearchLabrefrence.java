@@ -4,6 +4,8 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -44,7 +46,7 @@ import retrofit2.Response;
  */
 
 public class SearchLabrefrence extends RootActivity implements DatePickerDialog.OnDateSetListener, AdapterSeedRegistrationList.ItemClickRecListInterface, MaterialSearchBar.OnSearchActionListener {
-    String LogTag = this.getClass().getName();
+    String LogTag = this.getClass().getPackage().getName().toString();
 
     TextView txt_start_date, txt_end_date, txt_title;
     ImageView img_search;
@@ -75,6 +77,7 @@ public class SearchLabrefrence extends RootActivity implements DatePickerDialog.
     String toDate = year + "-" + (month + 1) + "-" + day;
     String operationType = "";
     boolean isSearch = false;
+   // private SwipeRefreshLayout swipeContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +90,32 @@ public class SearchLabrefrence extends RootActivity implements DatePickerDialog.
         clickEvent();
         searchBarClick();
         setSearchBar(isSearch);
+      //  swipeListner();
     }
+
+    /*private void swipeListner() {
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Your code here
+                Toast.makeText(getApplicationContext(), "Works!", Toast.LENGTH_LONG).show();
+                // To keep animation for 4 seconds
+                getLabeRefrenceList(txt_start_date.getText().toString(), txt_end_date.getText().toString(), operationType);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Stop animation (This will be after 3 seconds)
+                        swipeContainer.setRefreshing(false);
+
+
+                    }
+                }, 4000); // Delay in millis
+            }
+        });
+        // Configure the refreshing colors
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light, android.R.color.holo_orange_light, android.R.color.holo_red_light);
+    }
+*/
 
     private void searchBarClick() {
         img_search_enable.setOnClickListener(new View.OnClickListener() {
@@ -124,7 +152,10 @@ public class SearchLabrefrence extends RootActivity implements DatePickerDialog.
             @Override
             public void afterTextChanged(Editable s) {
                 Log.e(LogTag, "After search  :  " + s);
-                filter(s.toString());
+                if (ReportList != null && ReportList.size() > 0) {
+                    filter(s.toString());
+
+                }
             }
         });
     }
@@ -215,6 +246,7 @@ public class SearchLabrefrence extends RootActivity implements DatePickerDialog.
 
     private void createIDS() {
         datePickerDialog = new DatePickerDialog(this, this, year, month, day);
+    //    swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
 
 
         lnt_start_date = (LinearLayout) findViewById(R.id.lnt_start_date);
@@ -235,7 +267,7 @@ public class SearchLabrefrence extends RootActivity implements DatePickerDialog.
         alertDialog.setTitle("Seeds");
         alertDialog.setMessage("Please wait.....");
         ReportList = new ArrayList<>();
-
+        setDataCustomer();
     }
 
     private void setCurrentDate() {
@@ -274,12 +306,14 @@ public class SearchLabrefrence extends RootActivity implements DatePickerDialog.
             public void onResponse(Call<Report_List_For_AddResponse> call, Response<Report_List_For_AddResponse> response) {
                 // dialog End
                 // Log.e("my Response  : ","ppp  :  "+ response.body().toString());
+            //    swipeContainer.setRefreshing(false);
                 Log.e("my Response  : ", "Rajesh  :  " + new Gson().toJson(response));
                 alertDialog.dismiss();
                 Log.e("my Response  : ", response.body().getMessage().toString());
                 if (response.body().getStatusCode() == 0) {
                     ReportList = response.body().getList();
-                    //  adptSeedsRegistered.notifyDataSetChanged();
+                   // adptSeedsRegistered.notifyDataSetChanged();
+
                     setDataCustomer();
                 } else {
                     Toast.makeText(getApplicationContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
@@ -292,6 +326,7 @@ public class SearchLabrefrence extends RootActivity implements DatePickerDialog.
             @Override
             public void onFailure(Call<Report_List_For_AddResponse> call, Throwable t) {
                 Log.e("my Response  : ", t.toString());
+             //   swipeContainer.setRefreshing(false);
                 alertDialog.dismiss();
             }
         });

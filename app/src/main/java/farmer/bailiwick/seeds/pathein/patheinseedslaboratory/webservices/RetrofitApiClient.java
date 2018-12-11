@@ -26,10 +26,11 @@ public class RetrofitApiClient {
     //       private static final String BASE_URL = "http://192.168.0.145:8080/Seeds/";
     // Bailiwick 2g
     // private static final String BASE_URL = "http://192.168.0.145:8080/Seeds/";
-
-    private static final String BASE_URL = "http://192.168.137.1:8080/Seeds/";
-
-//    private static final String BASE_URL = "http://103.206.248.236:15000/Seeds/";
+    // rajnish pc
+    // private static final String BASE_URL = "http://192.168.137.1:8080/Seeds/";
+    // final link of server
+    private static final String BASE_URL = "\n" + "http://148.72.22.125:8080/Seeds/";
+    //    private static final String BASE_URL = "http://103.206.248.236:15000/Seeds/";
 
     private static Context ctx;
 

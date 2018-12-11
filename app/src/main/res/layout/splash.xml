@@ -15,7 +15,7 @@
         android:layout_centerInParent="true"
         android:layout_gravity="center"
         android:gravity="center|bottom"
-        android:src="@drawable/logo200" />
+        android:src="@drawable/logo_big" />
 
     <com.romainpiel.shimmer.ShimmerTextView
         android:id="@+id/txt_header"

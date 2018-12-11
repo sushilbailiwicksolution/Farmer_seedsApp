@@ -55,6 +55,7 @@ public class Report_status_Response {
     public void setList(List<ListData> list) {
         this.list = list;
     }
+
     public class ListData {
 
         @SerializedName("germinationTest")
@@ -75,6 +76,10 @@ public class Report_status_Response {
         @SerializedName("labReferenceCode")
         @Expose
         private String labReferenceCode;
+
+        @SerializedName("date")
+        @Expose
+        private String date;
 
         public String getGerminationTest() {
             return germinationTest;
@@ -122,6 +127,14 @@ public class Report_status_Response {
 
         public void setLabReferenceCode(String labReferenceCode) {
             this.labReferenceCode = labReferenceCode;
+        }
+
+        public String getDate() {
+            return date;
+        }
+
+        public void setDate(String date) {
+            this.date = date;
         }
 
     }

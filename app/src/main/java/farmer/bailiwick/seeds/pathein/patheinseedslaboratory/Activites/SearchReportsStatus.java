@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
@@ -39,9 +41,9 @@ import retrofit2.Response;
  * Created by Prince on 20-11-2018.
  */
 
-public class SearchReportsStatus extends RootActivity implements DatePickerDialog.OnDateSetListener, AdapterAllSeedsReport.ReportClickRecListInterface,AdapterAllSeedsReport.GerminationClickRecListInterface {
+public class SearchReportsStatus extends RootActivity implements DatePickerDialog.OnDateSetListener, AdapterAllSeedsReport.ReportClickRecListInterface, AdapterAllSeedsReport.GerminationClickRecListInterface, MaterialSearchBar.OnSearchActionListener {
 
-
+    String LogTag = this.getClass().getPackage().getName().toString();
     TextView txt_start_date, txt_end_date, txt_title;
     ImageView img_search;
     LinearLayout lnt_start_date, lnt_end_date;
@@ -50,7 +52,7 @@ public class SearchReportsStatus extends RootActivity implements DatePickerDialo
 
     ImageView img_search_enable;
     MaterialSearchBar searchBar;
-    
+
     android.app.AlertDialog alertDialog;
     Context mContext;
     List<Report_status_Response.ListData> ReportList;
@@ -71,6 +73,7 @@ public class SearchReportsStatus extends RootActivity implements DatePickerDialo
     String fromDate = year + "-" + (month + 1) + "-" + day;
     String toDate = year + "-" + (month + 1) + "-" + day;
     String operationType = "";
+    boolean isSearch = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +84,88 @@ public class SearchReportsStatus extends RootActivity implements DatePickerDialo
         getIntentValue();
         dateClickEvent();
         clickEvent();
+        searchBarClick();
+        setSearchBar(isSearch);
+    }
 
+    private void searchBarClick() {
+        img_search_enable.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isSearch) {
+                    isSearch = false;
+                    setSearchBar(isSearch);
+
+                } else {
+                    isSearch = true;
+                    setSearchBar(isSearch);
+
+                }
+            }
+        });
+        searchBar.setHint("Lab Refrence No");
+        //enable searchbar callbacks
+        searchBar.setOnSearchActionListener(this);
+
+        searchBar.addTextChangeListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                Log.e(LogTag, "Before search  :  " + s);
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                Log.e(LogTag, "On search  :  " + s);
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                Log.e(LogTag, "After search  :  " + s);
+                if (ReportList != null && ReportList.size() > 0) {
+                    filter(s.toString());
+
+                }
+            }
+        });
+    }
+
+    private void filter(String text) {
+        if (text.equalsIgnoreCase("")) {
+            updateList(ReportList);
+        }
+        List<Report_status_Response.ListData> temp = new ArrayList();
+        for (Report_status_Response.ListData d : ReportList) {
+            //or use .equal(text) with you want equal match
+            //use .toLowerCase() for better matches
+            if (d.getLabReferenceCode().contains(text.toUpperCase())) {
+                temp.add(d);
+            }
+        }
+        //update recyclerview
+        adptSeedsReport.updateList(temp);
+
+        //   adptSeedsRegistered.notifyDataSetChanged();
+    }
+
+    public void updateList(List<Report_status_Response.ListData> list) {
+        ReportList = list;
+        adptSeedsReport.notifyDataSetChanged();
+    }
+
+    private void setSearchBar(boolean isSearch) {
+        if (isSearch) {
+            searchBar.setVisibility(View.VISIBLE);
+            searchBar.setEnabled(true);
+            img_search_enable.setImageDrawable(getResources().getDrawable(android.R.drawable.ic_menu_close_clear_cancel));
+
+        } else {
+            searchBar.setVisibility(View.INVISIBLE);
+            searchBar.setEnabled(false);
+            img_search_enable.setImageDrawable(getResources().getDrawable(android.R.drawable.ic_menu_search));
+
+        }
     }
 
     private void clickEvent() {
@@ -134,8 +218,10 @@ public class SearchReportsStatus extends RootActivity implements DatePickerDialo
         img_search = (ImageView) findViewById(R.id.img_search);
         recyclerview_Lab_ref = (RecyclerView) findViewById(R.id.recyclerview_Lab_ref);
 
-        txt_start_date.setText(fromDate);
-        txt_end_date.setText(toDate);
+        searchBar = (MaterialSearchBar) findViewById(R.id.searchBar);
+        img_search_enable = (ImageView) findViewById(R.id.img_search_enable);
+        setCurrentDate();
+
 
         alertDialog = new SpotsDialog.Builder().setContext(this).build();
         alertDialog.setTitle("Seeds");
@@ -143,6 +229,21 @@ public class SearchReportsStatus extends RootActivity implements DatePickerDialo
         ReportList = new ArrayList<>();
 
     }
+
+    private void setCurrentDate() {
+        String month1, day1;
+        if (String.valueOf(month + 1).length() == 1) month1 = "0" + (month + 1);
+        else month1 = (month + 1) + "";
+
+        if (String.valueOf(day).length() == 1) {
+            day1 = "0" + (day);
+        } else {
+            day1 = (day) + "";
+        }
+        txt_start_date.setText(year + "-" + month1 + "-" + day1);
+        txt_end_date.setText(year + "-" + month1 + "-" + day1);
+    }
+
 
     private void getReportList(String fromDate, String toDate) {
 
@@ -192,7 +293,7 @@ public class SearchReportsStatus extends RootActivity implements DatePickerDialo
 
         Log.e("cart get from database", "databse size : " + ReportList.size());
 
-        adptSeedsReport = new AdapterAllSeedsReport(mContext, ReportList, this,this);
+        adptSeedsReport = new AdapterAllSeedsReport(mContext, ReportList, this, this);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mContext);
         mLayoutManager.setAutoMeasureEnabled(true);
         recyclerview_Lab_ref.setLayoutManager(mLayoutManager);
@@ -239,4 +340,24 @@ public class SearchReportsStatus extends RootActivity implements DatePickerDialo
         Log.e("lab refernce no ", "lab refernce no =  " + ReportList.get(position).getLabReferenceCode());
 
     }
+
+    @Override
+    public void onSearchStateChanged(boolean enabled) {
+        Log.e(LogTag, "i m heree 1" + enabled);
+        isSearch = enabled;
+
+    }
+
+    @Override
+    public void onSearchConfirmed(CharSequence text) {
+        Log.e(LogTag, "i m heree 2   :   " + text);
+        filter(text.toString());
+    }
+
+    @Override
+    public void onButtonClicked(int buttonCode) {
+        Log.e(LogTag, "i m heree 3  :  " + buttonCode);
+
+    }
+
 }
