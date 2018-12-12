@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Pathein Seeds laboratory</string>
     <string name="app_logo"><font fgcolor="#6fda44">Pathein </font><font> " "</font><font fgcolor="#26a9df">Seeds</font></string>
-    <string name="version">version 1.7</string>
+    <string name="version">version 1.8</string>
     <string name="Register">Register</string>
     <string name="Moisture">Moisture Test</string>
     <string name="Physical">Physical Purity Test</string>

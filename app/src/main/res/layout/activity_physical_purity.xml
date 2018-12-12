@@ -57,6 +57,7 @@
                     card_view:cardBackgroundColor="@color/white"
                     card_view:cardCornerRadius="10dp"
                     card_view:cardElevation="5dp"
+
                     card_view:cardUseCompatPadding="true">
 
                     <LinearLayout
@@ -307,6 +308,7 @@
                     android:layout_margin="2dp"
                     card_view:cardBackgroundColor="@color/white"
                     card_view:cardCornerRadius="10dp"
+
                     card_view:cardElevation="5dp"
                     card_view:cardUseCompatPadding="true">
 
@@ -338,7 +340,7 @@
 
                         </android.support.design.widget.TextInputLayout>
 
-
+                        <!--Pure seed-->
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -372,7 +374,7 @@
                                 android:textColor="@color/base_color"
                                 android:textStyle="bold" />
                         </LinearLayout>
-
+                        <!--inert matter-->
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -407,7 +409,7 @@
                                 android:textColor="@color/base_color"
                                 android:textStyle="bold" />
                         </LinearLayout>
-
+                        <!--other crop-->
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -442,8 +444,41 @@
                                 android:textColor="@color/base_color"
                                 android:textStyle="bold" />
                         </LinearLayout>
+                            <!--weed seeds-->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <android.support.design.widget.TextInputLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1">
 
 
+                                <EditText
+                                    android:id="@+id/edt_weed_seed"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_margin="3dp"
+                                    android:backgroundTint="@android:color/holo_blue_bright"
+                                    android:hint="Weed Seeds (g)"
+                                    android:inputType="numberDecimal" />
+
+                            </android.support.design.widget.TextInputLayout>
+
+                            <TextView
+                                android:id="@+id/txt_WS_avg"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:text=""
+                                android:textAllCaps="true"
+                                android:textColor="@color/base_color"
+                                android:textStyle="bold" />
+                        </LinearLayout>
                     </LinearLayout>
 
 
@@ -456,6 +491,7 @@
                     android:layout_margin="2dp"
                     card_view:cardBackgroundColor="@color/white"
                     card_view:cardCornerRadius="10dp"
+
                     card_view:cardElevation="5dp"
                     card_view:cardUseCompatPadding="true">
 
@@ -592,7 +628,41 @@
                                 android:textStyle="bold" />
                         </LinearLayout>
 
+                        <!--weed seeds-->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
 
+                            <android.support.design.widget.TextInputLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1">
+
+
+                                <EditText
+                                    android:id="@+id/edt_weed_seed1"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_margin="3dp"
+                                    android:backgroundTint="@android:color/holo_blue_bright"
+                                    android:hint="Weed Seeds (g)"
+                                    android:inputType="numberDecimal" />
+
+                            </android.support.design.widget.TextInputLayout>
+
+                            <TextView
+                                android:id="@+id/txt_WS_avg1"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:text=""
+                                android:textAllCaps="true"
+                                android:textColor="@color/base_color"
+                                android:textStyle="bold" />
+                        </LinearLayout>
                         <Button
                             android:id="@+id/btn_analys_calculate"
                             android:layout_width="wrap_content"
@@ -770,6 +840,46 @@
 
                                 <TextView
                                     android:id="@+id/txt_per_other_seed"
+
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:padding="3dp"
+                                    android:text=""
+                                    android:textColor="@color/base_color"
+                                    android:textStyle="bold" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:padding="3dp"
+                                    android:text="Weed"
+                                    android:textAllCaps="true"
+                                    android:textColor="@color/base_color"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/txt_avg_weed_seed"
+
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:padding="3dp"
+                                    android:text=""
+                                    android:textColor="@color/base_color"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/txt_per_weed_seed"
 
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"

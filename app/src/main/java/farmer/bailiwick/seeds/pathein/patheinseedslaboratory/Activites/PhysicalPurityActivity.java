@@ -47,17 +47,17 @@ public class PhysicalPurityActivity extends RootActivity implements DatePickerDi
     private Button btn_submit;
     private EditText edt_lab, edt_seed_class, edt_physical_purity, edt_analyst;
     // Round 1
-    EditText edt_weight_sample, edt_pure_seed, edt_insert_matter, edt_other_crop;
-    TextView txt_OC_avg, txt_IM_avg, txt_PS_avg;
+    EditText edt_weight_sample, edt_pure_seed, edt_insert_matter, edt_other_crop, edt_weed_seed;
+    TextView txt_OC_avg, txt_IM_avg, txt_PS_avg, txt_WS_avg;
 
     //Round 2
-    EditText edt_weight_sample1, edt_pure_seed1, edt_insert_matter1, edt_other_crop1;
-    TextView txt_OC_avg1, txt_IM_avg1, txt_PS_avg1;
+    EditText edt_weight_sample1, edt_pure_seed1, edt_insert_matter1, edt_other_crop1, edt_weed_seed1;
+    TextView txt_OC_avg1, txt_IM_avg1, txt_PS_avg1, txt_WS_avg1;
 
     // Average
     CardView crd_result;
 
-    TextView avg_working_sample, txt_per_other_seed, txt_per_inert_seed, txt_per_pure_seed, txt_avg_pure_seed, txt_avg_inert_seed, txt_avg_other_seed;
+    TextView avg_working_sample, txt_per_other_seed, txt_per_inert_seed, txt_per_pure_seed, txt_per_weed_seed, txt_avg_pure_seed, txt_avg_inert_seed, txt_avg_other_seed, txt_avg_weed_seed;
 
     Button btn_analys_calculate;
 
@@ -91,9 +91,9 @@ public class PhysicalPurityActivity extends RootActivity implements DatePickerDi
     String crop_id, seed_id;
     int updatevalue = -1;
 
-    float fPureSeed_wt, fInertSeed_wt, fOtherSeed_wt, fSeed_wt;
+    float fPureSeed_wt, fInertSeed_wt, fOtherSeed_wt, fSeed_wt, fWeedSeed_wt;
     // Average
-    float fPure_AVG, fInert_AVG, fOther_AVG;
+    float fPure_AVG, fInert_AVG, fOther_AVG, fWeed_AVG;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -167,6 +167,26 @@ public class PhysicalPurityActivity extends RootActivity implements DatePickerDi
             }
         });
 
+        edt_weed_seed.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+
+                String seed_weight = edt_weight_sample.getText().toString().trim();
+                String weed_seed = edt_weed_seed.getText().toString().trim();
+                if (!weed_seed.equalsIgnoreCase("")) {
+                    if (seed_weight.equalsIgnoreCase("")) {
+                        edt_weight_sample.setError("Requried");
+                        edt_weight_sample.requestFocus();
+                        return;
+                    } else {
+
+                        float wsAVG = CalulateMethods.getOtherSeedAverage(weed_seed, seed_weight);
+                        txt_WS_avg.setText(wsAVG + " %");
+                    }
+                }
+            }
+        });
+
     }
 
     private void Analysis_round1() {
@@ -223,6 +243,25 @@ public class PhysicalPurityActivity extends RootActivity implements DatePickerDi
                     } else {
                         float ocAVG = CalulateMethods.getOtherSeedAverage(other_seed, seed_weight);
                         txt_OC_avg1.setText(ocAVG + " %");
+                    }
+                }
+            }
+        });
+        edt_weed_seed1.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+
+                String seed_weight = edt_weight_sample1.getText().toString().trim();
+                String weed_seed = edt_weed_seed1.getText().toString().trim();
+                if (!weed_seed.equalsIgnoreCase("")) {
+                    if (seed_weight.equalsIgnoreCase("")) {
+                        edt_weight_sample1.setError("Requried");
+                        edt_weight_sample1.requestFocus();
+                        return;
+                    } else {
+
+                        float wsAVG = CalulateMethods.getOtherSeedAverage(weed_seed, seed_weight);
+                        txt_WS_avg1.setText(wsAVG + " %");
                     }
                 }
             }
@@ -384,15 +423,18 @@ public class PhysicalPurityActivity extends RootActivity implements DatePickerDi
     private void CalculaterRound() {
         String seed_weight = edt_weight_sample.getText().toString().trim();
 
-        if (seed_weight.equalsIgnoreCase("")) {
-            edt_weight_sample.setError("Requried ");
-            edt_weight_sample.requestFocus();
-            return;
-        } else {
+
             String pure_seed = edt_pure_seed.getText().toString().trim();
             String inert_matter = edt_insert_matter.getText().toString().trim();
             String other_seed = edt_other_crop.getText().toString().trim();
-            if (!pure_seed.equalsIgnoreCase("")) {
+            String weed_seed = edt_weed_seed.getText().toString().trim();
+
+            if (seed_weight.equalsIgnoreCase("")) {
+                edt_weight_sample.setError("Requried ");
+                edt_weight_sample.requestFocus();
+                return;
+            }
+           else if (!pure_seed.equalsIgnoreCase("")) {
                 float psAVG = CalulateMethods.getPureSeedAverage(pure_seed, seed_weight);
 
                 txt_PS_avg.setText(psAVG + " %");
@@ -401,39 +443,43 @@ public class PhysicalPurityActivity extends RootActivity implements DatePickerDi
             } else if (!inert_matter.equalsIgnoreCase("")) {
                 float imAVG = CalulateMethods.getInertSeedAverage(inert_matter, seed_weight);
                 txt_IM_avg.setText(imAVG + " %");
-            }
-            if (!other_seed.equalsIgnoreCase("")) {
+            } else if (!other_seed.equalsIgnoreCase("")) {
                 float ocAVG = CalulateMethods.getInertSeedAverage(other_seed, seed_weight);
                 txt_OC_avg.setText(ocAVG + " %");
-            }
+            } else if (!weed_seed.equalsIgnoreCase("")) {
+                float wsAVG = CalulateMethods.getInertSeedAverage(weed_seed, seed_weight);
+                txt_WS_avg.setText(wsAVG + " %");
+
         }
     }
 
     private void CalculaterRound1() {
         String seed_weight = edt_weight_sample1.getText().toString().trim();
 
-        if (seed_weight.equalsIgnoreCase("")) {
-            edt_weight_sample1.setError("Requried");
-            edt_weight_sample1.requestFocus();
-            return;
-        } else {
+
             String pure_seed = edt_pure_seed1.getText().toString().trim();
             String inert_matter = edt_insert_matter1.getText().toString().trim();
             String other_seed = edt_other_crop1.getText().toString().trim();
-            if (!pure_seed.equalsIgnoreCase("")) {
+            String weed_seed = edt_weed_seed1.getText().toString().trim();
+
+            if (seed_weight.equalsIgnoreCase("")) {
+                edt_weight_sample1.setError("Requried");
+                edt_weight_sample1.requestFocus();
+                return;
+            }else if (!pure_seed.equalsIgnoreCase("")) {
                 float psAVG = CalulateMethods.getPureSeedAverage(pure_seed, seed_weight);
                 txt_PS_avg1.setText(psAVG + " %");
 
-            }
-            if (!inert_matter.equalsIgnoreCase("")) {
+            } else if (!inert_matter.equalsIgnoreCase("")) {
                 float imAVG = CalulateMethods.getInertSeedAverage(inert_matter, seed_weight);
                 txt_IM_avg1.setText(imAVG + " %");
-            }
-            if (!other_seed.equalsIgnoreCase("")) {
+            } else if (!other_seed.equalsIgnoreCase("")) {
                 float ocAVG = CalulateMethods.getInertSeedAverage(other_seed, seed_weight);
                 txt_OC_avg1.setText(ocAVG + " %");
+            } else if (!weed_seed.equalsIgnoreCase("")) {
+                float wsAVG = CalulateMethods.getInertSeedAverage(weed_seed, seed_weight);
+                txt_WS_avg1.setText(wsAVG + " %");
             }
-        }
         PurityAverage();
 
 
@@ -452,6 +498,9 @@ public class PhysicalPurityActivity extends RootActivity implements DatePickerDi
         String other_seed = edt_other_crop.getText().toString().trim();
         String other_seed1 = edt_other_crop1.getText().toString().trim();
 
+        String weed_seed = edt_weed_seed.getText().toString().trim();
+        String weed_seed1 = edt_weed_seed1.getText().toString().trim();
+
         String seed_weight = edt_weight_sample.getText().toString().trim();
         String seed_weight1 = edt_weight_sample1.getText().toString().trim();
 
@@ -466,6 +515,11 @@ public class PhysicalPurityActivity extends RootActivity implements DatePickerDi
         } else if (other_seed.equalsIgnoreCase("") || other_seed1.equalsIgnoreCase("")) {
             edt_other_crop.setError("Requried");
             edt_other_crop1.setError("Requried");
+
+            return;
+        } else if (weed_seed.equalsIgnoreCase("") || weed_seed1.equalsIgnoreCase("")) {
+            edt_weed_seed.setError("Requried");
+            edt_weed_seed1.setError("Requried");
 
             return;
         } else if (pure_seed.equalsIgnoreCase("") || pure_seed1.equalsIgnoreCase("")) {
@@ -483,33 +537,45 @@ public class PhysicalPurityActivity extends RootActivity implements DatePickerDi
             float otAVG = CalulateMethods.getPureSeedAverage(other_seed, seed_weight);
             float otAVG1 = CalulateMethods.getPureSeedAverage(other_seed1, seed_weight1);
 
+            float wsAVG = CalulateMethods.getPureSeedAverage(weed_seed, seed_weight);
+            float wsAVG1 = CalulateMethods.getPureSeedAverage(weed_seed1, seed_weight1);
 
             // Averages
             float pureSeed_Average = (psAVG + psAVG1) / 2;
             float inertSeed_Average = (inAVG + inAVG1) / 2;
             float otherSeed_Average = (otAVG + otAVG1) / 2;
+            float weedSeed_Average = (wsAVG + wsAVG1) / 2;
+
             // weight
 
 
             fPureSeed_wt = CalulateMethods.getAverageWEIGHT(pure_seed, pure_seed1);
             fInertSeed_wt = CalulateMethods.getAverageWEIGHT(inert_seed, inert_seed1);
             fOtherSeed_wt = CalulateMethods.getAverageWEIGHT(other_seed, other_seed1);
+            fWeedSeed_wt = CalulateMethods.getAverageWEIGHT(weed_seed, weed_seed1);
+
             fSeed_wt = CalulateMethods.getAverageWEIGHT(seed_weight, seed_weight1);
+
 
             DecimalFormat decimalFormat = new DecimalFormat("#.##");
             fPure_AVG = Float.valueOf(decimalFormat.format(pureSeed_Average));
             fInert_AVG = Float.valueOf(decimalFormat.format(inertSeed_Average));
             fOther_AVG = Float.valueOf(decimalFormat.format(otherSeed_Average));
+            fWeed_AVG = Float.valueOf(decimalFormat.format(weedSeed_Average));
 
             avg_working_sample.setText(fSeed_wt + " %");
-
+            // Average
             txt_per_pure_seed.setText("" + fPure_AVG + " %");
             txt_per_inert_seed.setText("" + fInert_AVG + " %");
             txt_per_other_seed.setText("" + fOther_AVG + " %");
+            txt_per_weed_seed.setText("" + fWeed_AVG + " %");
+
+            // Grams
 
             txt_avg_pure_seed.setText("" + fPureSeed_wt + " g");
             txt_avg_inert_seed.setText("" + fInertSeed_wt + " g");
             txt_avg_other_seed.setText("" + fOtherSeed_wt + " g");
+            txt_avg_weed_seed.setText("" + fWeedSeed_wt + " g");
 
             edt_physical_purity.setText("" + fPure_AVG);
             crd_result.setVisibility(View.VISIBLE);
@@ -578,8 +644,8 @@ public class PhysicalPurityActivity extends RootActivity implements DatePickerDi
 
         } else {
             Log.e("All Set ", "All Set ");
-          //  Toast.makeText(getApplicationContext(), "All data is selected No save it", Toast.LENGTH_SHORT).show();
-            String labReferenceCode, dateOfReceipt, dateOfTest, cropName = "", variety, seedClass = "", pureSeed, weightOfSample, inertMatter, otherCropSeeds, pureSeedR, weightOfSampleR, inertMatterR, otherCropSeedsR, inOfAnalyst, physicalPurity, avWtOfSample, avWtOfPureSeed, avWtOfInert, avOtherCrop, otherCropPer, inertPer;
+            //  Toast.makeText(getApplicationContext(), "All data is selected No save it", Toast.LENGTH_SHORT).show();
+            String labReferenceCode, dateOfReceipt, dateOfTest, cropName = "", variety, seedClass = "", pureSeed, weightOfSample, inertMatter, otherCropSeeds, weedCropSeeds, pureSeedR, weightOfSampleR, inertMatterR, otherCropSeedsR, weedCropSeedsR, inOfAnalyst, physicalPurity, avWtOfSample, avWtOfPureSeed, avWtOfInert, avOtherCrop, avWeedCrop, otherCropPer, inertPer, weedPer;
 
             labReferenceCode = edt_lab.getText().toString().trim();
             dateOfReceipt = txt_date_receipt.getText().toString().trim();
@@ -590,32 +656,36 @@ public class PhysicalPurityActivity extends RootActivity implements DatePickerDi
             pureSeed = edt_pure_seed.getText().toString().trim();
             inertMatter = edt_insert_matter.getText().toString().trim();
             otherCropSeeds = edt_other_crop.getText().toString().trim();
+            weedCropSeeds = edt_weed_seed.getText().toString().trim();
 
             // Replica 2
             weightOfSampleR = edt_weight_sample1.getText().toString().trim();
             pureSeedR = edt_pure_seed1.getText().toString().trim();
             inertMatterR = edt_insert_matter1.getText().toString().trim();
             otherCropSeedsR = edt_other_crop1.getText().toString().trim();
+            weedCropSeedsR = edt_weed_seed1.getText().toString().trim();
 
             //Average Purit G
             avWtOfSample = "" + fSeed_wt;
             avWtOfPureSeed = "" + fPureSeed_wt;
             avWtOfInert = "" + fInertSeed_wt;
             avOtherCrop = "" + fOtherSeed_wt;
+            avWeedCrop = "" + fWeedSeed_wt;
 
             // Average purity in percentage
             otherCropPer = "" + fOther_AVG;
             inertPer = "" + fInert_AVG;
+            weedPer = "" + fWeed_AVG;
 
             physicalPurity = edt_physical_purity.getText().toString().trim();
             inOfAnalyst = edt_analyst.getText().toString().trim();
 
             if (updatevalue == 0) {
-                SaveDatage(labReferenceCode, dateOfReceipt, dateOfTest, cropName, variety, seedClass, pureSeed, weightOfSample, inertMatter, otherCropSeeds, pureSeedR, weightOfSampleR, inertMatterR, otherCropSeedsR, inOfAnalyst, physicalPurity, avWtOfSample, avWtOfPureSeed, avWtOfInert, avOtherCrop, otherCropPer, inertPer);
+                SaveDatage(labReferenceCode, dateOfReceipt, dateOfTest, cropName, variety, seedClass, pureSeed, weightOfSample, inertMatter, otherCropSeeds, pureSeedR, weightOfSampleR, inertMatterR, otherCropSeedsR, inOfAnalyst, physicalPurity, avWtOfSample, avWtOfPureSeed, avWtOfInert, avOtherCrop, otherCropPer, inertPer, weedCropSeeds, weedCropSeedsR, avWeedCrop, weedPer);
 
             } else if (updatevalue == 1) {
                 Log.e("i have to update", "i have to update");
-                SaveDatage(labReferenceCode, dateOfReceipt, dateOfTest, cropName, variety, seedClass, pureSeed, weightOfSample, inertMatter, otherCropSeeds, pureSeedR, weightOfSampleR, inertMatterR, otherCropSeedsR, inOfAnalyst, physicalPurity, avWtOfSample, avWtOfPureSeed, avWtOfInert, avOtherCrop, otherCropPer, inertPer);
+                UpdateDatag(labReferenceCode, dateOfReceipt, dateOfTest, cropName, variety, seedClass, pureSeed, weightOfSample, inertMatter, otherCropSeeds, pureSeedR, weightOfSampleR, inertMatterR, otherCropSeedsR, inOfAnalyst, physicalPurity, avWtOfSample, avWtOfPureSeed, avWtOfInert, avOtherCrop, otherCropPer, inertPer, weedCropSeeds, weedCropSeedsR, avWeedCrop, weedPer);
 
             } else {
                 Log.e("Value is not come", "Value is not come");
@@ -624,7 +694,7 @@ public class PhysicalPurityActivity extends RootActivity implements DatePickerDi
         }
     }
 
-    private void UpdateDatag(String labReferenceCode, String dateOfReceipt, String dateOfTest, String cropName, String variety, String seedClass, String pureSeed, String weightOfSample, String inertMatter, String otherCropSeeds, String pureSeedR, String weightOfSampleR, String inertMatterR, String otherCropSeedsR, String inOfAnalyst, String physicalPurity, String avWtOfSample, String avWtOfPureSeed, String avWtOfInert, String avOtherCrop, String otherCropPer, String inertPer) {
+    private void UpdateDatag(String labReferenceCode, String dateOfReceipt, String dateOfTest, String cropName, String variety, String seedClass, String pureSeed, String weightOfSample, String inertMatter, String otherCropSeeds, String pureSeedR, String weightOfSampleR, String inertMatterR, String otherCropSeedsR, String inOfAnalyst, String physicalPurity, String avWtOfSample, String avWtOfPureSeed, String avWtOfInert, String avOtherCrop, String otherCropPer, String inertPer, String weedCropSeeds, String weedCropSeedsR, String avWeedCrop, String weedPer) {
 
 
         JSONObject js = new JSONObject();
@@ -643,11 +713,13 @@ public class PhysicalPurityActivity extends RootActivity implements DatePickerDi
             js.put("weightOfSample", weightOfSample);
             js.put("inertMatter", inertMatter);
             js.put("otherCropSeeds", otherCropSeeds);
+            js.put("weed", weedCropSeeds);
 
             js.put("pureSeedR", pureSeedR);
             js.put("weightOfSampleR", weightOfSampleR);
             js.put("inertMatterR", inertMatterR);
             js.put("otherCropSeedsR", otherCropSeedsR);
+            js.put("weedReplica", weedCropSeedsR);
 
 
             js.put("inOfAnalyst", inOfAnalyst);
@@ -658,13 +730,11 @@ public class PhysicalPurityActivity extends RootActivity implements DatePickerDi
             js.put("avWtOfPureSeed", avWtOfPureSeed);
             js.put("avWtOfInert", avWtOfInert);
             js.put("avOtherCrop", avOtherCrop);
+            js.put("weedAverage", avWeedCrop);
 
             js.put("otherCropPer", otherCropPer);
             js.put("inertPer", inertPer);
-
-
-
-
+            js.put("weedPercentage", weedPer);
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -713,7 +783,7 @@ public class PhysicalPurityActivity extends RootActivity implements DatePickerDi
 
     }
 
-    private void SaveDatage(String labReferenceCode, String dateOfReceipt, String dateOfTest, String cropName, String variety, String seedClass, String pureSeed, String weightOfSample, String inertMatter, String otherCropSeeds, String pureSeedR, String weightOfSampleR, String inertMatterR, String otherCropSeedsR, String inOfAnalyst, String physicalPurity, String avWtOfSample, String avWtOfPureSeed, String avWtOfInert, String avOtherCrop, String otherCropPer, String inertPer) {
+    private void SaveDatage(String labReferenceCode, String dateOfReceipt, String dateOfTest, String cropName, String variety, String seedClass, String pureSeed, String weightOfSample, String inertMatter, String otherCropSeeds, String pureSeedR, String weightOfSampleR, String inertMatterR, String otherCropSeedsR, String inOfAnalyst, String physicalPurity, String avWtOfSample, String avWtOfPureSeed, String avWtOfInert, String avOtherCrop, String otherCropPer, String inertPer, String weedCropSeeds, String weedCropSeedsR, String avWeedCrop, String weedPer) {
 
 
         JSONObject js = new JSONObject();
@@ -732,11 +802,13 @@ public class PhysicalPurityActivity extends RootActivity implements DatePickerDi
             js.put("weightOfSample", weightOfSample);
             js.put("inertMatter", inertMatter);
             js.put("otherCropSeeds", otherCropSeeds);
+            js.put("weed", weedCropSeeds);
 
             js.put("pureSeedR", pureSeedR);
             js.put("weightOfSampleR", weightOfSampleR);
             js.put("inertMatterR", inertMatterR);
             js.put("otherCropSeedsR", otherCropSeedsR);
+            js.put("weedReplica", weedCropSeedsR);
 
 
             js.put("inOfAnalyst", inOfAnalyst);
@@ -747,9 +819,11 @@ public class PhysicalPurityActivity extends RootActivity implements DatePickerDi
             js.put("avWtOfPureSeed", avWtOfPureSeed);
             js.put("avWtOfInert", avWtOfInert);
             js.put("avOtherCrop", avOtherCrop);
+            js.put("weedAverage", avWeedCrop);
 
             js.put("otherCropPer", otherCropPer);
             js.put("inertPer", inertPer);
+            js.put("weedPercentage", weedPer);
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -822,30 +896,36 @@ public class PhysicalPurityActivity extends RootActivity implements DatePickerDi
         edt_pure_seed = (EditText) findViewById(R.id.edt_pure_seed);
         edt_insert_matter = (EditText) findViewById(R.id.edt_insert_matter);
         edt_other_crop = (EditText) findViewById(R.id.edt_other_crop);
+        edt_weed_seed = (EditText) findViewById(R.id.edt_weed_seed);
 
         txt_OC_avg = (TextView) findViewById(R.id.txt_OC_avg);
         txt_IM_avg = (TextView) findViewById(R.id.txt_IM_avg);
         txt_PS_avg = (TextView) findViewById(R.id.txt_PS_avg);
+        txt_WS_avg = (TextView) findViewById(R.id.txt_WS_avg);
 
         crd_result = (CardView) findViewById(R.id.crd_result);
         avg_working_sample = (TextView) findViewById(R.id.avg_working_sample);
         txt_per_other_seed = (TextView) findViewById(R.id.txt_per_other_seed);
         txt_per_inert_seed = (TextView) findViewById(R.id.txt_per_inert_seed);
         txt_per_pure_seed = (TextView) findViewById(R.id.txt_per_pure_seed);
+        txt_per_weed_seed = (TextView) findViewById(R.id.txt_per_weed_seed);
+
         txt_avg_pure_seed = (TextView) findViewById(R.id.txt_avg_pure_seed);
         txt_avg_inert_seed = (TextView) findViewById(R.id.txt_avg_inert_seed);
         txt_avg_other_seed = (TextView) findViewById(R.id.txt_avg_other_seed);
-
+        txt_avg_weed_seed = (TextView) findViewById(R.id.txt_avg_weed_seed);
         // Round 2
 
         edt_weight_sample1 = (EditText) findViewById(R.id.edt_weight_sample1);
         edt_pure_seed1 = (EditText) findViewById(R.id.edt_pure_seed1);
         edt_insert_matter1 = (EditText) findViewById(R.id.edt_insert_matter1);
         edt_other_crop1 = (EditText) findViewById(R.id.edt_other_crop1);
+        edt_weed_seed1 = (EditText) findViewById(R.id.edt_weed_seed1);
 
         txt_OC_avg1 = (TextView) findViewById(R.id.txt_OC_avg1);
         txt_IM_avg1 = (TextView) findViewById(R.id.txt_IM_avg1);
         txt_PS_avg1 = (TextView) findViewById(R.id.txt_PS_avg1);
+        txt_WS_avg1 = (TextView) findViewById(R.id.txt_WS_avg1);
 
 
         edt_physical_purity = (EditText) findViewById(R.id.edt_physical_purity);
