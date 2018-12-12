@@ -2,6 +2,7 @@ package farmer.bailiwick.seeds.pathein.patheinseedslaboratory.Activites;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -127,6 +128,8 @@ public class RegistrationActivity extends RootActivity implements DatePickerDial
         setSpinnerData();
         clickevent();
         spinnerClickEvent();
+        Log.e("i m heree", "i m heree 2");
+
         setAddressVisiblity(View.VISIBLE, View.GONE, View.GONE);
     }
 
@@ -174,26 +177,47 @@ public class RegistrationActivity extends RootActivity implements DatePickerDial
 
     private void checkValidation() {
 
+
         if (edt_sender_name.getText().toString().trim().equalsIgnoreCase("")) {
             edt_sender_name.setError("requried");
             edt_sender_name.requestFocus();
+            return;
+
+        } else if (spnr_sender_catagory.getSelectedItemPosition() <= 0) {
+            Toast.makeText(getApplicationContext(), "Please Select Sender Catagory", Toast.LENGTH_LONG).show();
+            spnr_sender_catagory.requestFocus();
+            return;
+
+        } else if (spnr_region.getSelectedItemPosition() <= 0) {
+            Toast.makeText(getApplicationContext(), "Please Select Region", Toast.LENGTH_LONG).show();
+            spnr_region.requestFocus();
+
+            return;
+
+        } else if (spnr_township.getSelectedItemPosition() <= 0) {
+            Toast.makeText(getApplicationContext(), "Please Township", Toast.LENGTH_LONG).show();
+            spnr_township.requestFocus();
+
+            return;
+
+        } else if (spnr_village_tract.getSelectedItemPosition() <= 0) {
+            Toast.makeText(getApplicationContext(), "Please Village Tract", Toast.LENGTH_LONG).show();
+            spnr_village_tract.requestFocus();
+
+            return;
+
+        } else if (spnr_village.getSelectedItemPosition() <= 0) {
+            Toast.makeText(getApplicationContext(), "Please Village", Toast.LENGTH_LONG).show();
+            spnr_village_tract.requestFocus();
+
             return;
 
         } else if (txt_date_receipt.getText().toString().equalsIgnoreCase("")) {
             txt_date_receipt.setError("Please Select Date");
             txt_date_receipt.requestFocus();
             return;
-        } else if (spnr_sender_catagory.getSelectedItemPosition() == 0) {
-            Toast.makeText(getApplicationContext(), "Please Select Sender Catagory", Toast.LENGTH_LONG).show();
-            spnr_sender_catagory.requestFocus();
-            return;
-
-        } else if (isTract) {
-            Toast.makeText(getApplicationContext(), "Please Fill Address", Toast.LENGTH_LONG).show();
-            spnr_region.requestFocus();
-            return;
-
         } else if (spnr_crop.getSelectedItemPosition() == 0) {
+            Log.e("i m heree", "track value : " + tractList);
             Toast.makeText(getApplicationContext(), "Please Select Crop", Toast.LENGTH_LONG).show();
             spnr_crop.requestFocus();
             return;
@@ -208,13 +232,6 @@ public class RegistrationActivity extends RootActivity implements DatePickerDial
         } else if (!spnr_crop.getSelectedItem().toString().trim().equalsIgnoreCase("Rice") && edt_varity.getText().toString().trim().equalsIgnoreCase("")) {
             edt_varity.setError("Please Select Varity");
             edt_varity.requestFocus();
-            return;
-
-        }
-        if (spnr_region.getSelectedItemPosition() == 0) {
-            Toast.makeText(getApplicationContext(), "Please Select Region", Toast.LENGTH_LONG).show();
-            spnr_region.requestFocus();
-
             return;
 
         } else if (txt_year_of_production.getText().toString().equalsIgnoreCase(getResources().getString(R.string.year))) {
@@ -267,11 +284,11 @@ public class RegistrationActivity extends RootActivity implements DatePickerDial
 
         } else {
             Log.e("All Set ", "All Set ");
-            Toast.makeText(getApplicationContext(), "All data is selected No save it", Toast.LENGTH_SHORT).show();
+          //  Toast.makeText(getApplicationContext(), "All data is selected No save it", Toast.LENGTH_SHORT).show();
 // user
             String senderName, township, senderCatagory, villageTrack, village, dateOfReceipt, crop, varityName, region, season_name, lotNo, seed_name, sampleQty, packing, year, germinationTest, moistureTest, physicalPurityTest, redRiceTest, allTest;
             senderName = edt_sender_name.getText().toString().trim();
-            senderCatagory = "" + (spnr_sender_catagory.getSelectedItemPosition() );
+            senderCatagory = "" + (spnr_sender_catagory.getSelectedItemPosition());
 // address
             township = townsList.get(spnr_township.getSelectedItemPosition() - 1).getId().toString();
             villageTrack = tractList.get(spnr_village_tract.getSelectedItemPosition() - 1).getId().toString();
@@ -371,7 +388,7 @@ public class RegistrationActivity extends RootActivity implements DatePickerDial
         }
         Log.e("Params ", "Values  : " + js.toString());
 
-        //  alertDialog.show();
+          alertDialog.show();
         final RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), (js.toString()));
         // Dialog start
         RetrofitApiClient.get().SaveSample(body).enqueue(new Callback<Regionresponse>() {
@@ -379,6 +396,7 @@ public class RegistrationActivity extends RootActivity implements DatePickerDial
             public void onResponse(Call<Regionresponse> call, Response<Regionresponse> response) {
                 // dialog End
                 // Log.e("my Response  : ","ppp  :  "+ response.body().toString());
+                alertDialog.dismiss();
                 Log.e("my Response  : ", "Rajesh  :  " + new Gson().toJson(response));
                 //        alertDialog.dismiss();
                 Log.e("my Response  : ", response.body().getMessage().toString());
@@ -420,6 +438,7 @@ public class RegistrationActivity extends RootActivity implements DatePickerDial
         setCurrentDate();
         spnr_crop.setSelection(0);
         spnr_region.setSelection(0);
+        spnr_sender_catagory.setSelection(0);
         txt_year_of_production.setText("YEAR");
         spnr_season.setSelection(0);
         edt_lot_no.setText("");
@@ -434,13 +453,13 @@ public class RegistrationActivity extends RootActivity implements DatePickerDial
     }
 
     private void spinnerClickEvent() {
-        spnr_village_tract.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spnr_village.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position >= 0) {
                     isTract = false;
                 } else {
-                    if (spnr_village_tract.getVisibility() == View.VISIBLE) {
+                    if (spnr_village.getVisibility() == View.VISIBLE) {
                         isTract = true;
 
                     }
@@ -503,10 +522,12 @@ public class RegistrationActivity extends RootActivity implements DatePickerDial
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position == 0) {
+
                     setAddressVisiblity(View.VISIBLE, View.GONE, View.GONE);
                 } else {
                     setAddressVisiblity(View.VISIBLE, View.GONE, View.GONE);
-                    getVillage(townsList.get(position - 1).getId());
+                    getTract(townsList.get(position - 1).getId());
+
 
                 }
             }
@@ -517,14 +538,14 @@ public class RegistrationActivity extends RootActivity implements DatePickerDial
             }
         });
 
-        spnr_village.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spnr_village_tract.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position == 0) {
-                    setAddressVisiblity(View.VISIBLE, View.VISIBLE, View.GONE);
+                    setAddressVisiblity(View.VISIBLE, View.GONE, View.VISIBLE);
                 } else {
-                    setAddressVisiblity(View.VISIBLE, View.VISIBLE, View.GONE);
-                    getTract(villageList.get(position - 1).getId());
+                    setAddressVisiblity(View.VISIBLE, View.GONE, View.VISIBLE);
+                    getVillage(townsList.get(position - 1).getId());
 
                 }
             }
@@ -548,6 +569,8 @@ public class RegistrationActivity extends RootActivity implements DatePickerDial
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        Log.e(Tag.class.getName(), js.toString());
+
         final RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), js.toString());
         // Dialog start
         RetrofitApiClient.get().getTract(body).enqueue(new Callback<Village_T_Response>() {
@@ -590,7 +613,7 @@ public class RegistrationActivity extends RootActivity implements DatePickerDial
 //        Spinner_Religion_adapter.setDropDownViewResource(R.layout.spinner_layout);
         Spinner_tract_adapter.setDropDownViewResource(R.layout.spinner_layout_white);
         spnr_village_tract.setAdapter(Spinner_tract_adapter);
-        setAddressVisiblity(View.VISIBLE, View.VISIBLE, View.VISIBLE);
+        setAddressVisiblity(View.VISIBLE, View.GONE, View.VISIBLE);
     }
 
     private void getVillage(Integer id) {
@@ -646,7 +669,9 @@ public class RegistrationActivity extends RootActivity implements DatePickerDial
 //        Spinner_Religion_adapter.setDropDownViewResource(R.layout.spinner_layout);
         Spinner_village_adapter.setDropDownViewResource(R.layout.spinner_layout_white);
         spnr_village.setAdapter(Spinner_village_adapter);
-        setAddressVisiblity(View.VISIBLE, View.VISIBLE, View.GONE);
+        Log.e("i m heree", "i m heree 1");
+
+        setAddressVisiblity(View.VISIBLE, View.VISIBLE, View.VISIBLE);
     }
 
     private void getTownship(Integer id) {
@@ -706,7 +731,7 @@ public class RegistrationActivity extends RootActivity implements DatePickerDial
     }
 
     private void setAddressVisiblity(int isTownship, int isVillage, int isTract) {
-
+        Log.e("All Values", "town : " + isTownship + " village " + isVillage + "  tract : " + isTract);
 
         spnr_township.setVisibility(isTownship);
         spnr_village_tract.setVisibility(isTract);

@@ -36,10 +36,10 @@ public interface ApiInterface {
     @POST("getTownShipByStateId")
     Call<Township_Response> getTownship(@Body RequestBody body);
 
-    @POST("getVillageTrackOnTownId")
+    @POST("getVillageByVillageTrackId")
     Call<village_Response> getVillage(@Body RequestBody body);
 
-    @POST("getVillageByVillageTrackId")
+    @POST("getVillageTrackOnTownId")
     Call<Village_T_Response> getTract(@Body RequestBody body);
 
     @POST("getVariety")

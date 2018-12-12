@@ -225,6 +225,30 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:padding="3dp"
+                            android:text="Village Tract"
+                            android:textColor="@color/color_black"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <Spinner
+                            android:id="@+id/spnr_village_tract"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerInParent="true"
+                            android:layout_gravity="center"
+                            android:layout_marginTop="7dp"
+
+                            android:layout_weight="1"
+
+                            android:background="@drawable/spnr_selector_border_less_white"
+                            android:paddingLeft="0dp"
+                            android:popupBackground="@color/white" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="3dp"
                             android:text="Village"
                             android:textColor="@color/color_black"
                             android:textSize="16sp"
@@ -245,29 +269,6 @@
                             android:paddingLeft="0dp"
                             android:popupBackground="@color/white" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:padding="3dp"
-                            android:text="Village Tract"
-                            android:textColor="@color/color_black"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
-
-                        <Spinner
-                            android:id="@+id/spnr_village_tract"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentRight="true"
-                            android:layout_centerInParent="true"
-                            android:layout_gravity="center"
-                            android:layout_marginTop="7dp"
-
-                            android:layout_weight="1"
-
-                            android:background="@drawable/spnr_selector_border_less_white"
-                            android:paddingLeft="0dp"
-                            android:popupBackground="@color/white" />
 
                         <LinearLayout
                             android:id="@+id/lnt_date_receipt"

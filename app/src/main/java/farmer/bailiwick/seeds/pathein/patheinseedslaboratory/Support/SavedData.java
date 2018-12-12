@@ -103,10 +103,10 @@ private static final String DATABASE_VERSION = "DB_version";
         editor.apply();
     }
 
-    public static int getLangArray() {
+  /*  public static int getLangArray() {
         return getInstance().getInt(LanguageArrayID,
                 R.array.English);
-    }
+    }*/
 
     public static void setLangArray(int status) {
         SharedPreferences.Editor editor = getInstance().edit();
