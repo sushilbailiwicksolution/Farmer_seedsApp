@@ -545,7 +545,7 @@ public class RegistrationActivity extends RootActivity implements DatePickerDial
                     setAddressVisiblity(View.VISIBLE, View.GONE, View.VISIBLE);
                 } else {
                     setAddressVisiblity(View.VISIBLE, View.GONE, View.VISIBLE);
-                    getVillage(townsList.get(position - 1).getId());
+                    getVillage(tractList.get(position - 1).getId());
 
                 }
             }

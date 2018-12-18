@@ -470,7 +470,7 @@
                                 android:layout_margin="3dp"
                                 android:backgroundTint="@android:color/holo_blue_bright"
                                 android:hint="Lot No."
-                                android:inputType="numberDecimal" />
+                                android:inputType="textPersonName" />
 
                         </android.support.design.widget.TextInputLayout>
 
